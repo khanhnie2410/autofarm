@@ -9,7 +9,7 @@ local Workspace = game:GetService("Workspace")
 local player = Players.LocalPlayer
 local hrp
 
--- Check if 'HumanoidRootPart' exists
+-- Kiểm tra sự tồn tại của 'HumanoidRootPart'
 local function waitForCharacter()
     while not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") do
         wait(0.1)
@@ -19,7 +19,7 @@ end
 
 hrp = waitForCharacter()
 
--- Initial settings
+-- Các cài đặt ban đầu
 local settings = {
     autoFarm = false,
     autoFly = false,
@@ -47,15 +47,14 @@ local settings = {
     infiniteStamina = false,
     fastAttack = false,
     autoFarmBoss = false,
-    teleportToNPC = false,
-    attackType = "Melee", -- New attack type setting (Melee, Sword, Fruit, Gun)
+    teleportToNPC = false
 }
 
--- Anti-AFK function
+-- Anti-AFK Function
 local function antiAFK()
     while settings.antiAFK do
         VirtualUser:CaptureController()
-        VirtualUser:ClickButton2(Vector2.new())  -- Simulate random action to avoid AFK
+        VirtualUser:ClickButton2(Vector2.new())  -- Tạo hành động ngẫu nhiên để tránh bị AFK
         wait(60)
     end
 end
@@ -65,7 +64,7 @@ local function autoFarm()
     while settings.autoFarm do
         for _, npc in pairs(Workspace.Enemies:GetChildren()) do
             if npc:FindFirstChild("Humanoid") and npc.Humanoid.Health > 0 then
-                hrp.CFrame = npc.HumanoidRootPart.CFrame  -- Move to NPC and attack
+                hrp.CFrame = npc.HumanoidRootPart.CFrame  -- Di chuyển đến NPC và tấn công
                 ReplicatedStorage.Combat:FireServer("Attack")
                 wait(settings.farmSpeed)
             end
@@ -74,49 +73,27 @@ local function autoFarm()
     end
 end
 
--- Auto Quest Logic
+-- Logic Auto Quest
 local function autoQuest()
     while settings.autoQuest do
-        -- Logic to complete quests automatically here
-        -- Example: check if the quest is active and perform required actions
+        -- Logic hoàn thành nhiệm vụ tự động ở đây
+        -- Ví dụ: kiểm tra xem nhiệm vụ có đang hoạt động không và thực hiện các hành động cần thiết
         wait(2)
     end
 end
 
--- Auto Respawn Logic
+-- Logic Auto Respawn
 local function autoRespawn()
     while settings.autoRespawn do
         if not player.Character or not player.Character:FindFirstChild("Humanoid") or player.Character.Humanoid.Health <= 0 then
-            -- Automatically respawn when dead
+            -- Khi chết, tự động hồi sinh
             ReplicatedStorage.Remotes.Respawn:FireServer()
         end
         wait(1)
     end
 end
 
--- Auto Attack NPC
-local function autoAttackNPC()
-    while settings.autoAttackNPC do
-        for _, npc in pairs(Workspace.Enemies:GetChildren()) do
-            if npc:FindFirstChild("Humanoid") and npc.Humanoid.Health > 0 then
-                -- Check attack type
-                if settings.attackType == "Melee" then
-                    ReplicatedStorage.Combat:FireServer("MeleeAttack")
-                elseif settings.attackType == "Sword" then
-                    ReplicatedStorage.Combat:FireServer("SwordAttack")
-                elseif settings.attackType == "Fruit" then
-                    ReplicatedStorage.Combat:FireServer("FruitAttack")
-                elseif settings.attackType == "Gun" then
-                    ReplicatedStorage.Combat:FireServer("GunAttack")
-                end
-                wait(settings.farmSpeed)
-            end
-        end
-        wait(2)
-    end
-end
-
--- Create Menu
+-- Menu Creation Function
 local function createMenu()
     local ScreenGui = Instance.new("ScreenGui", player.PlayerGui)
     local MainButton = Instance.new("ImageButton", ScreenGui)
@@ -188,12 +165,11 @@ local function createMenu()
     createCategory(MainFrame, "Miscellaneous", {"menuEnabled", "infiniteStamina"})
 end
 
--- Initialize Menu and functions
+-- Khởi tạo Menu và các chức năng
 createMenu()
 spawn(antiAFK)
 spawn(autoFarm)
 spawn(autoQuest)
 spawn(autoRespawn)
-spawn(autoAttackNPC)
 
-print("Script initialized successfully!")
+print("Script đã được khởi tạo thành công!")
