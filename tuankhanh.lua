@@ -46,10 +46,6 @@ local settings = {
     v4QuestComplete = false
 }
 
--- Lấy player và hrp
-local player = game.Players.LocalPlayer
-local hrp = player.Character:WaitForChild("HumanoidRootPart")
-
 -- Tạo menu GUI
 local function createMenu()
     local ScreenGui = Instance.new("ScreenGui", player.PlayerGui)
