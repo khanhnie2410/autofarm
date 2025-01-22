@@ -46,6 +46,13 @@ local settings = {
     v4QuestComplete = false
 }
 
+-- Lấy HumanoidRootPart của nhân vật
+local player = game.Players.LocalPlayer
+local hrp = player.Character and player.Character:WaitForChild("HumanoidRootPart")
+if not hrp then
+    warn("Không tìm thấy HumanoidRootPart!")
+end
+
 -- Tạo menu GUI
 local function createMenu()
     local ScreenGui = Instance.new("ScreenGui", player.PlayerGui)
