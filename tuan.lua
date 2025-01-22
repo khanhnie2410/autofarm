@@ -47,133 +47,215 @@ local function createMenu()
         {"autoAttackNPC", "Auto Attack NPC"}, {"autoLevelUp", "Auto Level Up"}, {"antiAFK", "Anti AFK"},
         {"infiniteStamina", "Infinite Stamina"}, {"fastAttack", "Fast Attack"}, {"autoFarmBoss", "Auto Farm Boss"},
         {"teleportToNPC", "Teleport to NPC"}
-    }
+    }local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local VirtualUser = game:GetService("VirtualUser")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local workspace = game:GetService("Workspace")
 
-    for i, feature in ipairs(functions) do
-        local Button = Instance.new("TextButton", MainFrame)
-        Button.Size = UDim2.new(0, 230, 0, 30)
-        Button.Position = UDim2.new(0, 10, 0, (i - 1) * 40 + 10)
-        Button.Text = feature[2]
-        Button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-        Button.TextColor3 = Color3.new(1, 1, 1)
+local player = Players.LocalPlayer
+local hrp = player.Character and player.Character:WaitForChild("HumanoidRootPart")
 
-        Button.MouseButton1Click:Connect(function()
-            settings[feature[1]] = not settings[feature[1]]
-            Button.Text = feature[2] .. ": " .. (settings[feature[1]] and "ON" or "OFF")
-        end)
+if not hrp then
+    warn("HumanoidRootPart not found!")
+    return
+end
+
+-- Configuration for Features
+local settings = {
+    autoFarm = false,
+    autoFly = false,
+    autoFruit = false,
+    autoQuest = false,
+    autoRespawn = true,
+    godMode = false,
+    teleportEnabled = true,
+    autoBuyItems = false,
+    autoChest = false,
+    autoAttackNPC = false,
+    autoLevelUp = false,
+    antiAFK = true,
+    farmSpeed = 1,
+    flySpeed = 50,
+    flyHeight = 100,
+    randomDelay = true,
+    minDelay = 2,
+    maxDelay = 4,
+    menuEnabled = true,
+    raceType = "Human",
+    v2QuestComplete = false,
+    v3QuestComplete = false,
+    v4QuestComplete = false,
+    infiniteStamina = false,
+    fastAttack = false,
+    autoFarmBoss = false,
+    teleportToNPC = false
+}
+
+-- Function to prevent AFK
+local function antiAFK()
+    while settings.antiAFK do
+        VirtualUser:CaptureController()
+        VirtualUser:ClickButton2(Vector2.new())
+        wait(60)
     end
 end
 
--- Auto Collect Chest
-local function autoCollectChest()
-    while settings.autoChest do
-        for _, chest in pairs(workspace:GetDescendants()) do
-            if chest:IsA("Model") and chest.Name:match("Chest") then
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = chest.PrimaryPart.CFrame
-                wait(1)
-            end
+-- Function to create the menu GUI
+local function createMenu()
+    local ScreenGui = Instance.new("ScreenGui", player.PlayerGui)
+    local MainButton = Instance.new("ImageButton", ScreenGui)
+    MainButton.Name = "MenuButton"
+    MainButton.Size = UDim2.new(0, 50, 0, 50)
+    MainButton.Position = UDim2.new(0, 10, 0, 10)
+    MainButton.Image = "rbxassetid://140432928117878"
+    MainButton.BackgroundTransparency = 1
+
+    local MainFrame = Instance.new("Frame", ScreenGui)
+    MainFrame.Size = UDim2.new(0, 300, 0, 400)
+    MainFrame.Position = UDim2.new(0, 70, 0, 10)
+    MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    MainFrame.BackgroundTransparency = 0.5
+    MainFrame.Visible = false
+
+    MainButton.MouseButton1Click:Connect(function()
+        MainFrame.Visible = not MainFrame.Visible
+    end)
+
+    local function createCategory(categoryName, options)
+        local categoryFrame = Instance.new("Frame", MainFrame)
+        categoryFrame.Size = UDim2.new(0, 280, 0, 50 + (#options * 30))
+        categoryFrame.Position = UDim2.new(0, 10, 0, 10)
+        categoryFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+
+        local titleLabel = Instance.new("TextLabel", categoryFrame)
+        titleLabel.Size = UDim2.new(1, 0, 0, 30)
+        titleLabel.Text = categoryName
+        titleLabel.TextColor3 = Color3.new(1, 1, 1)
+        titleLabel.BackgroundTransparency = 1
+
+        for i, option in ipairs(options) do
+            local Button = Instance.new("TextButton", categoryFrame)
+            Button.Size = UDim2.new(1, -10, 0, 25)
+            Button.Position = UDim2.new(0, 5, 0, 30 + (i - 1) * 30)
+            Button.Text = option
+            Button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            Button.TextColor3 = Color3.new(1, 1, 1)
+
+            Button.MouseButton1Click:Connect(function()
+                settings[option] = not settings[option]
+                Button.Text = option .. ": " .. (settings[option] and "ON" or "OFF")
+
+                -- Logic to execute actions when a feature is toggled
+                if option == "autoFarm" then
+                    if settings.autoFarm then
+                        spawn(autoFarmAction)
+                    end
+                elseif option == "autoFly" then
+                    if settings.autoFly then
+                        spawn(autoFlyAction)
+                    end
+                elseif option == "autoRespawn" then
+                    if settings.autoRespawn then
+                        spawn(autoRespawnAction)
+                    end
+                elseif option == "autoAttackNPC" then
+                    if settings.autoAttackNPC then
+                        spawn(autoAttackNPCAction)
+                    end
+                elseif option == "autoLevelUp" then
+                    if settings.autoLevelUp then
+                        spawn(autoLevelUpAction)
+                    end
+                elseif option == "godMode" then
+                    if settings.godMode then
+                        spawn(godModeAction)
+                    end
+                elseif option == "autoChest" then
+                    if settings.autoChest then
+                        spawn(autoChestAction)
+                    end
+                elseif option == "antiAFK" then
+                    if settings.antiAFK then
+                        spawn(antiAFKAction)
+                    end
+                end
+            end)
         end
-        wait(2)
     end
+
+    -- Create categories with options
+    createCategory("General Settings", {
+        "autoFarm",
+        "autoFly",
+        "autoFruit",
+        "autoQuest",
+        "autoRespawn",
+        "godMode",
+        "teleportEnabled",
+        "antiAFK"
+    })
+
+    createCategory("Advanced Settings", {
+        "autoBuyItems",
+        "autoChest",
+        "autoAttackNPC",
+        "autoLevelUp",
+        "fastAttack",
+        "infiniteStamina",
+        "autoFarmBoss",
+        "teleportToNPC"
+    })
 end
 
--- Auto Attack NPC
-local function autoAttackNPC()
-    while settings.autoAttackNPC do
-        for _, npc in pairs(workspace.Enemies:GetChildren()) do
-            if npc:FindFirstChild("Humanoid") and npc.Humanoid.Health > 0 then
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame
-                game:GetService("ReplicatedStorage").Combat:FireServer("Attack")
-                wait(0.5)
-            end
-        end
-    end
-end
-
--- Auto Farm
-local function autoFarm()
+-- Logic for Auto Farm
+local function autoFarmAction()
     while settings.autoFarm do
         for _, npc in pairs(workspace.Enemies:GetChildren()) do
             if npc:FindFirstChild("Humanoid") and npc.Humanoid.Health > 0 then
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame
-                wait(0.5)
-                game:GetService("ReplicatedStorage").Combat:FireServer("Attack")
+                hrp.CFrame = npc.HumanoidRootPart.CFrame
+                ReplicatedStorage.Combat:FireServer("Attack")
+                wait(settings.farmSpeed)
             end
         end
-        wait(settings.farmSpeed)
-    end
-end
-
--- Auto Fruit
-local function autoEatFruit()
-    while settings.autoFruit do
-        -- Logic for auto fruit (eating fruit automatically)
-        wait(5)
-    end
-end
-
--- Infinite Stamina
-local function infiniteStamina()
-    while settings.infiniteStamina do
-        -- Logic to prevent stamina from depleting
-        wait(0.5)
-    end
-end
-
--- Fast Attack
-local function fastAttack()
-    while settings.fastAttack do
-        -- Logic to speed up attack rate
-        wait(0.2)
-    end
-end
-
--- Auto Respawn
-local function autoRespawn()
-    while settings.autoRespawn do
-        -- Code to automatically respawn after death
         wait(2)
     end
 end
 
--- Teleport to NPC
-local function teleportToNPC()
-    while settings.teleportToNPC do
-        local npc = workspace:FindFirstChild("NPC_Name") -- Change to NPC name
-        if npc then
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = npc.CFrame
+-- Logic for Auto Fly
+local function autoFlyAction()
+    while settings.autoFly do
+        hrp.CFrame = hrp.CFrame + Vector3.new(0, settings.flyHeight, 0)
+        wait(1 / settings.flySpeed)
+    end
+end
+
+-- Logic for Auto Respawn
+local function autoRespawnAction()
+    while settings.autoRespawn do
+        if player.Character and not player.Character:FindFirstChild("HumanoidRootPart") then
+            wait(5)
+            player:LoadCharacter()
         end
         wait(5)
     end
 end
 
--- Auto Buy Items
-local function autoBuyItems()
-    while settings.autoBuyItems do
-        -- Logic to buy items from the shop
-        wait(5)
+-- Logic for God Mode
+local function godModeAction()
+    while settings.godMode do
+        if player.Character then
+            player.Character.Humanoid.Health = player.Character.Humanoid.MaxHealth
+        end
+        wait(1)
     end
-end
-
--- Start all the features
-local function startFeatures()
-    spawn(function() if settings.autoFarm then autoFarm() end end)
-    spawn(function() if settings.autoFly then autoFly() end end)
-    spawn(function() if settings.autoFruit then autoEatFruit() end end)
-    spawn(function() if settings.autoQuest then autoQuest() end end)
-    spawn(function() if settings.autoRespawn then autoRespawn() end end)
-    spawn(function() if settings.godMode then godMode() end end)
-    spawn(function() if settings.autoChest then autoCollectChest() end end)
-    spawn(function() if settings.autoAttackNPC then autoAttackNPC() end end)
-    spawn(function() if settings.autoLevelUp then autoLevelUp() end end)
-    spawn(function() if settings.antiAFK then antiAFK() end end)
-    spawn(function() if settings.infiniteStamina then infiniteStamina() end end)
-    spawn(function() if settings.fastAttack then fastAttack() end end)
-    spawn(function() if settings.teleportToNPC then teleportToNPC() end end)
-    spawn(function() if settings.autoBuyItems then autoBuyItems() end end)
 end
 
 -- Start the script
 createMenu()
-startFeatures()
-print("Script has been successfully enabled!")
+spawn(antiAFK)
+spawn(autoFarmAction)
+spawn(autoFlyAction)
+
+print("Script has been successfully loaded!")
