@@ -1,4 +1,4 @@
--- Các vật phẩm trong Fruit Shop
+-- Fruit Shop items
 local fruitShopItems = {
     "Gomu Gomu no Mi", "Mera Mera no Mi", "Goro Goro no Mi", "Pika Pika no Mi", "Hie Hie no Mi", 
     "Magu Magu no Mi", "Tori Tori no Mi", "Zushi Zushi no Mi", "Yami Yami no Mi", "Suna Suna no Mi", 
@@ -6,17 +6,17 @@ local fruitShopItems = {
     "Dragon Dragon no Mi", "Venom Venom no Mi"
 }
 
--- Các vật phẩm có thể mua trong SHOP (Kiếm và Súng)
+-- Items available for purchase in the SHOP (Swords and Guns)
 local shopItems = {
-    -- Kiếm
+    -- Swords
     "Dark Blade", "Flame Sword", "True Triple Katana", "Cursed Dual Katana", "Cutlass", "Ice Sword", "Soul Guitar", 
     "Blade", "Shuriken", "Magma Blade", "Pirate Blade", "Venom Blade", "Dragon Slayer", "Sand Blade",
     
-    -- Súng
+    -- Guns
     "Gun", "Elite Gun", "Sniper", "Flintlock", "Shotgun", "Pistol", 
     "M1 Garand", "Bazooka", "Laser Gun", "Rocket Launcher",
 
-    -- Phụ Kiện
+    -- Accessories
     "Angel Wings", "Demon Wings", "Advanced Haki (Mastery)"
 }
 
@@ -46,14 +46,14 @@ local settings = {
     v4QuestComplete = false
 }
 
--- Lấy HumanoidRootPart của nhân vật
+-- Get HumanoidRootPart of the player character
 local player = game.Players.LocalPlayer
 local hrp = player.Character and player.Character:WaitForChild("HumanoidRootPart")
 if not hrp then
-    warn("Không tìm thấy HumanoidRootPart!")
+    warn("HumanoidRootPart not found!")
 end
 
--- Tạo menu GUI
+-- Create the menu GUI
 local function createMenu()
     local ScreenGui = Instance.new("ScreenGui", player.PlayerGui)
     local MainFrame = Instance.new("Frame", ScreenGui)
@@ -63,32 +63,6 @@ local function createMenu()
     MainFrame.BackgroundTransparency = 0.5
     MainFrame.Visible = settings.menuEnabled
 
-    -- Tạo logo
-    local logo = Instance.new("ImageButton")
-    logo.Size = UDim2.new(0, 50, 0, 50)
-    logo.Position = UDim2.new(0, 10, 0, 10)
-    logo.Image = "rbxassetid://140432928117878"  -- Thêm ID logo của bạn
-    logo.Parent = ScreenGui
-
-    -- Cập nhật trạng thái menu
-    local menuExpanded = false
-
-    -- Thêm sự kiện khi bấm vào logo để mở rộng thu nhỏ menu
-    logo.MouseButton1Click:Connect(function()
-        if menuExpanded then
-            -- Thu nhỏ menu lại
-            MainFrame.Size = UDim2.new(0, 200, 0, 500)
-            logo.Size = UDim2.new(0, 50, 0, 50)
-            menuExpanded = false
-        else
-            -- Mở rộng menu
-            MainFrame.Size = UDim2.new(0, 300, 0, 600)
-            logo.Size = UDim2.new(0, 150, 0, 150)
-            menuExpanded = true
-        end
-    end)
-
-    -- Tạo các nút chức năng
     local functions = {
         "autoFarm", "autoFly", "autoFruit", "autoQuest", "autoRespawn",
         "godMode", "autoBuyItems", "teleportEnabled", "autoChest", "autoAttackNPC", "autoLevelUp", "antiAFK"
@@ -96,8 +70,8 @@ local function createMenu()
 
     for i, feature in ipairs(functions) do
         local Button = Instance.new("TextButton", MainFrame)
-        Button.Size = UDim2.new(0, 180, 0, 30)
-        Button.Position = UDim2.new(0, 10, 0, (i - 1) * 35 + 10)
+        Button.Size = UDim2.new(0, 180, 0, 25)  -- Compact button height
+        Button.Position = UDim2.new(0, 10, 0, (i - 1) * 30 + 10)
         Button.Text = feature
         Button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
         Button.TextColor3 = Color3.new(1, 1, 1)
@@ -138,12 +112,12 @@ end
 -- Auto Level Up
 local function autoLevelUp()
     while settings.autoLevelUp do
-        local quest = workspace.QuestGivers:FindFirstChild("QuestName") -- Replace with real NPC quest name
+        local quest = workspace.QuestGivers:FindFirstChild("QuestName") -- Replace with actual NPC quest name
         if quest then
             hrp.CFrame = quest.CFrame
             wait(1)
-            print("Nhận nhiệm vụ")
-            -- Thêm logic nhận và hoàn thành nhiệm vụ
+            print("Receiving quest")
+            -- Add logic to accept and complete quests
         end
         wait(5)
     end
@@ -161,24 +135,34 @@ end
 -- Auto Buy Fruits from Fruit Shop
 local function autoBuyFruits()
     while settings.autoBuyItems do
-        local fruitShop = workspace:FindFirstChild("Fruit Shop") -- Thay "Fruit Shop" bằng tên chính xác của Fruit Shop
+        local fruitShop = workspace:FindFirstChild("Fruit Shop") -- Replace with correct Fruit Shop name
         if fruitShop then
             hrp.CFrame = fruitShop.PrimaryPart.CFrame
             wait(1)
             local randomFruit = fruitShopItems[math.random(1, #fruitShopItems)]
-            print("Đang mua trái ác quỷ: " .. randomFruit)
+            print("Buying Devil Fruit: " .. randomFruit)
 
-            -- Logic mua trái ác quỷ (Giả sử có sự kiện để mua trái trong game)
-            -- Ví dụ: game:GetService("ReplicatedStorage").Shop:FireServer("Buy", randomFruit)
+            -- Logic to buy fruit (Assuming there is an event to buy fruits in the game)
+            -- Example: game:GetService("ReplicatedStorage").Shop:FireServer("Buy", randomFruit)
 
             wait(5)
         else
-            print("Fruit Shop không tìm thấy!")
+            print("Fruit Shop not found!")
         end
         wait(10)
     end
 end
 
--- Bắt đầu các chức năng
+-- Start the features
 local function startFeatures()
     spawn(function() if settings.autoChest then autoCollectChest() end end)
+    spawn(function() if settings.autoAttackNPC then autoAttackNPC() end end)
+    spawn(function() if settings.autoLevelUp then autoLevelUp() end end)
+    spawn(function() if settings.antiAFK then antiAFK() end end)
+    spawn(function() if settings.autoBuyItems then autoBuyFruits() end end)
+end
+
+-- Start the script
+createMenu()
+startFeatures()
+print("Script has been successfully enabled!")
