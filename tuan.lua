@@ -9,7 +9,7 @@ local Workspace = game:GetService("Workspace")
 local player = Players.LocalPlayer
 local hrp
 
--- Kiểm tra sự tồn tại của 'HumanoidRootPart'
+-- Check for the existence of 'HumanoidRootPart'
 local function waitForCharacter()
     while not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") do
         wait(0.1)
@@ -19,7 +19,7 @@ end
 
 hrp = waitForCharacter()
 
--- Các cài đặt ban đầu
+-- Initial settings
 local settings = {
     autoFarm = false,
     autoFly = false,
@@ -50,11 +50,11 @@ local settings = {
     teleportToNPC = false
 }
 
--- Anti-AFK Function
+-- Anti-AFK function
 local function antiAFK()
     while settings.antiAFK do
         VirtualUser:CaptureController()
-        VirtualUser:ClickButton2(Vector2.new())  -- Tạo hành động ngẫu nhiên để tránh bị AFK
+        VirtualUser:ClickButton2(Vector2.new())  -- Prevent AFK by simulating a random action
         wait(60)
     end
 end
@@ -64,7 +64,7 @@ local function autoFarm()
     while settings.autoFarm do
         for _, npc in pairs(Workspace.Enemies:GetChildren()) do
             if npc:FindFirstChild("Humanoid") and npc.Humanoid.Health > 0 then
-                hrp.CFrame = npc.HumanoidRootPart.CFrame  -- Di chuyển đến NPC và tấn công
+                hrp.CFrame = npc.HumanoidRootPart.CFrame  -- Move to NPC and attack
                 ReplicatedStorage.Combat:FireServer("Attack")
                 wait(settings.farmSpeed)
             end
@@ -73,20 +73,11 @@ local function autoFarm()
     end
 end
 
--- Logic Auto Quest
-local function autoQuest()
-    while settings.autoQuest do
-        -- Logic hoàn thành nhiệm vụ tự động ở đây
-        -- Ví dụ: kiểm tra xem nhiệm vụ có đang hoạt động không và thực hiện các hành động cần thiết
-        wait(2)
-    end
-end
-
--- Logic Auto Respawn
+-- Auto Respawn Logic
 local function autoRespawn()
     while settings.autoRespawn do
         if not player.Character or not player.Character:FindFirstChild("Humanoid") or player.Character.Humanoid.Health <= 0 then
-            -- Khi chết, tự động hồi sinh
+            -- Respawn automatically if dead
             ReplicatedStorage.Remotes.Respawn:FireServer()
         end
         wait(1)
@@ -117,7 +108,7 @@ local function createMenu()
     -- Function to create a collapsible menu category
     local function createCategory(parent, categoryName, options)
         local categoryFrame = Instance.new("Frame", parent)
-        categoryFrame.Size = UDim2.new(1, 0, 0, 30)
+        categoryFrame.Size = UDim2.new(0.4, 0, 1, 0)
         categoryFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
         categoryFrame.BorderSizePixel = 0
 
@@ -130,11 +121,12 @@ local function createMenu()
         titleButton.TextSize = 16
 
         local optionsFrame = Instance.new("Frame", parent)
-        optionsFrame.Size = UDim2.new(1, 0, 0, #options * 35)
-        optionsFrame.Position = UDim2.new(0, 0, 0, 30)
+        optionsFrame.Size = UDim2.new(0.6, 0, 1, 0)
+        optionsFrame.Position = UDim2.new(0.4, 0, 0, 0)
         optionsFrame.BackgroundTransparency = 1
         optionsFrame.Visible = false
 
+        -- Create buttons for options
         for i, option in ipairs(options) do
             local Button = Instance.new("TextButton", optionsFrame)
             Button.Size = UDim2.new(1, -10, 0, 30)
@@ -153,10 +145,11 @@ local function createMenu()
 
         titleButton.MouseButton1Click:Connect(function()
             optionsFrame.Visible = not optionsFrame.Visible
-            categoryFrame.Size = UDim2.new(1, 0, 0, optionsFrame.Visible and (#options * 35 + 30) or 30)
+            categoryFrame.Size = UDim2.new(0.4, 0, 1, optionsFrame.Visible and (#options * 35 + 30) or 30)
         end)
     end
 
+    -- Create categories
     createCategory(MainFrame, "Farm", {"autoFarm", "autoFarmBoss", "autoChest", "farmSpeed", "randomDelay", "minDelay", "maxDelay"})
     createCategory(MainFrame, "Combat", {"godMode", "autoAttackNPC", "fastAttack", "teleportToNPC"})
     createCategory(MainFrame, "Utility", {"autoRespawn", "antiAFK", "teleportEnabled", "autoFly", "flySpeed", "flyHeight"})
@@ -165,11 +158,10 @@ local function createMenu()
     createCategory(MainFrame, "Miscellaneous", {"menuEnabled", "infiniteStamina"})
 end
 
--- Khởi tạo Menu và các chức năng
+-- Initialize Menu and Functions
 createMenu()
 spawn(antiAFK)
 spawn(autoFarm)
-spawn(autoQuest)
 spawn(autoRespawn)
 
-print("Script đã được khởi tạo thành công!")
+print("Script has been successfully initialized!")
