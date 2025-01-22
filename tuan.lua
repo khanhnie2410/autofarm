@@ -63,6 +63,32 @@ local function createMenu()
     MainFrame.BackgroundTransparency = 0.5
     MainFrame.Visible = settings.menuEnabled
 
+    -- Tạo logo
+    local logo = Instance.new("ImageButton")
+    logo.Size = UDim2.new(0, 50, 0, 50)
+    logo.Position = UDim2.new(0, 10, 0, 10)
+    logo.Image = "rbxassetid://140432928117878"  -- Thêm ID logo của bạn
+    logo.Parent = ScreenGui
+
+    -- Cập nhật trạng thái menu
+    local menuExpanded = false
+
+    -- Thêm sự kiện khi bấm vào logo để mở rộng thu nhỏ menu
+    logo.MouseButton1Click:Connect(function()
+        if menuExpanded then
+            -- Thu nhỏ menu lại
+            MainFrame.Size = UDim2.new(0, 200, 0, 500)
+            logo.Size = UDim2.new(0, 50, 0, 50)
+            menuExpanded = false
+        else
+            -- Mở rộng menu
+            MainFrame.Size = UDim2.new(0, 300, 0, 600)
+            logo.Size = UDim2.new(0, 150, 0, 150)
+            menuExpanded = true
+        end
+    end)
+
+    -- Tạo các nút chức năng
     local functions = {
         "autoFarm", "autoFly", "autoFruit", "autoQuest", "autoRespawn",
         "godMode", "autoBuyItems", "teleportEnabled", "autoChest", "autoAttackNPC", "autoLevelUp", "antiAFK"
@@ -156,13 +182,3 @@ end
 -- Bắt đầu các chức năng
 local function startFeatures()
     spawn(function() if settings.autoChest then autoCollectChest() end end)
-    spawn(function() if settings.autoAttackNPC then autoAttackNPC() end end)
-    spawn(function() if settings.autoLevelUp then autoLevelUp() end end)
-    spawn(function() if settings.antiAFK then antiAFK() end end)
-    spawn(function() if settings.autoBuyItems then autoBuyFruits() end end)  -- Thêm autoBuyItems vào
-end
-
--- Bắt đầu script
-createMenu()
-startFeatures()
-print("Script đã được bật thành công!")
