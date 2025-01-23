@@ -1,5 +1,5 @@
 -- Load UI Library
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/khanhnie2410/autofarm/refs/heads/main/tuan.lua"))()
 local Window = Library.CreateLib("Redz Hub - Custom", "DarkTheme")
 
 -- Create Logo Button (Small) - Top Left Corner
