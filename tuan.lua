@@ -95,8 +95,8 @@ local function createMenu()
     MainButton.BackgroundTransparency = 1
 
     local MainFrame = Instance.new("Frame", ScreenGui)
-    MainFrame.Size = UDim2.new(0, 400, 0, 500)
-    MainFrame.Position = UDim2.new(0.5, -200, 0.5, -250)
+    MainFrame.Size = UDim2.new(0, 300, 0, 400)
+    MainFrame.Position = UDim2.new(0.5, -150, 0.5, -200)
     MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     MainFrame.Visible = false
     MainFrame.BorderSizePixel = 0
@@ -117,8 +117,8 @@ local function createMenu()
         titleButton.Text = categoryName
         titleButton.TextColor3 = Color3.new(1, 1, 1)
         titleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-        titleButton.Font = Enum.Font.SourceSansBold
-        titleButton.TextSize = 16
+        titleButton.Font = Enum.Font.SourceSans
+        titleButton.TextSize = 12
 
         local optionsFrame = Instance.new("Frame", parent)
         optionsFrame.Size = UDim2.new(0.6, 0, 1, 0)
@@ -130,12 +130,12 @@ local function createMenu()
         for i, option in ipairs(options) do
             local Button = Instance.new("TextButton", optionsFrame)
             Button.Size = UDim2.new(1, -10, 0, 30)
-            Button.Position = UDim2.new(0, 5, 0, (i - 1) * 35)
+            Button.Position = UDim2.new(0, 5, 0, (i - 1) * 30)
             Button.Text = option
             Button.TextColor3 = Color3.new(1, 1, 1)
             Button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
             Button.Font = Enum.Font.SourceSans
-            Button.TextSize = 14
+            Button.TextSize = 12
 
             Button.MouseButton1Click:Connect(function()
                 settings[option] = not settings[option]
@@ -145,13 +145,13 @@ local function createMenu()
 
         titleButton.MouseButton1Click:Connect(function()
             optionsFrame.Visible = not optionsFrame.Visible
-            categoryFrame.Size = UDim2.new(0.4, 0, 1, optionsFrame.Visible and (#options * 35 + 30) or 30)
+            categoryFrame.Size = UDim2.new(0.4, 0, 1, optionsFrame.Visible and (#options * 30 + 20) or 30)
         end)
     end
 
     -- Create categories
-    createCategory(MainFrame, "Farm", {"autoFarm", "autoFarmBoss", "autoChest", "farmSpeed", "randomDelay", "minDelay", "maxDelay"})
-    createCategory(MainFrame, "Combat", {"godMode", "autoAttackNPC", "fastAttack", "teleportToNPC"})
+    createCategory(MainFrame, "Farm", {"autoFarm", "autoFarmBoss", "autoChest", "farmSpeed"})
+    createCategory(MainFrame, "Combat", {"godMode", "autoAttackNPC", "fastAttack"})
     createCategory(MainFrame, "Utility", {"autoRespawn", "antiAFK", "teleportEnabled", "autoFly", "flySpeed", "flyHeight"})
     createCategory(MainFrame, "Stats", {"autoLevelUp", "autoBuyItems", "autoQuest", "autoFruit"})
     createCategory(MainFrame, "Race", {"raceType", "v2QuestComplete", "v3QuestComplete", "v4QuestComplete"})
