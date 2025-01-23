@@ -1,107 +1,139 @@
-local ScreenGui = Instance.new("ScreenGui", game.Players.LocalPlayer:WaitForChild("PlayerGui"))
-ScreenGui.Name = "CustomMenu"
+-- Load UI Library
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("Redz Hub - Custom", "DarkTheme")
 
--- Main Menu
-local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Size = UDim2.new(0, 300, 0, 500)
-MainFrame.Position = UDim2.new(0.5, -150, 0.5, -250)
-MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-MainFrame.Visible = true
+-- Create Logo Button (Small) - Top Left Corner
+local logoButton = Instance.new("ImageButton")
+logoButton.Parent = game.CoreGui:FindFirstChild("Redz Hub - Custom") or game.Players.LocalPlayer.PlayerGui:FindFirstChild("Redz Hub - Custom")
+logoButton.Size = UDim2.new(0, 40, 0, 40) -- Smaller Logo
+logoButton.Position = UDim2.new(0, 10, 0, 10) -- Top-Left Corner
+logoButton.BackgroundTransparency = 1
+logoButton.Image = "rbxassetid://140432928117878" -- Logo ID
 
-local ToggleButton = Instance.new("TextButton", ScreenGui)
-ToggleButton.Size = UDim2.new(0, 100, 0, 40)
-ToggleButton.Position = UDim2.new(0.5, -50, 0, 10)
-ToggleButton.Text = "Toggle Menu"
-ToggleButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-
-ToggleButton.MouseButton1Click:Connect(function()
-    MainFrame.Visible = not MainFrame.Visible
+-- Toggle UI Visibility
+local isVisible = true
+logoButton.MouseButton1Click:Connect(function()
+    isVisible = not isVisible
+    Window:ToggleUI(isVisible)
 end)
 
--- Add Logo
-local Logo = Instance.new("ImageLabel", MainFrame)
-Logo.Size = UDim2.new(0, 100, 0, 100)
-Logo.Position = UDim2.new(0.5, -50, 0, 10) -- Centered at the top
-Logo.BackgroundTransparency = 1
-Logo.Image = "rbxassetid://140432928117878"
+-- Define States for Features
+local States = {}
 
--- Function to create categories
-local function createCategory(name, positionY)
-    local CategoryFrame = Instance.new("Frame", MainFrame)
-    CategoryFrame.Size = UDim2.new(0, 300, 0, 100)
-    CategoryFrame.Position = UDim2.new(0, 0, 0, positionY)
-    CategoryFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+-- Create Tabs
+local FarmTab = Window:NewTab("Farm")
+local TeleportTab = Window:NewTab("Teleport")
+local VisualTab = Window:NewTab("Visual")
+local StatsTab = Window:NewTab("Stats")
+local FruitRaidTab = Window:NewTab("Fruit/Raid")
+local ChestTab = Window:NewTab("Chest")
+local MiscTab = Window:NewTab("Misc")
 
-    local CategoryLabel = Instance.new("TextLabel", CategoryFrame)
-    CategoryLabel.Size = UDim2.new(1, 0, 0, 30)
-    CategoryLabel.Text = name
-    CategoryLabel.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-    CategoryLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    CategoryLabel.Font = Enum.Font.SourceSansBold
-    CategoryLabel.TextSize = 18
+--------------------
+-- 📌 FARM MENU
+--------------------
+local FarmSection = FarmTab:NewSection("Auto Farm")
 
-    return CategoryFrame
-end
+States.AutoFarmLevel = false
+States.AutoFarmNearest = false
+States.AutoFarmBoss = false
 
--- Function to create buttons
-local function createButton(parent, text, positionY, callback)
-    local Button = Instance.new("TextButton", parent)
-    Button.Size = UDim2.new(0, 260, 0, 30)
-    Button.Position = UDim2.new(0, 20, 0, positionY)
-    Button.Text = text
-    Button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Button.Font = Enum.Font.SourceSans
-    Button.TextSize = 14
-
-    Button.MouseButton1Click:Connect(callback)
-    return Button
-end
-
--- Auto Farm Category
-local AutoFarmFrame = createCategory("Auto Farm", 120)
-createButton(AutoFarmFrame, "Start Auto Farm", 40, function()
-    print("Auto Farm Started!")
-end)
-createButton(AutoFarmFrame, "Stop Auto Farm", 80, function()
-    print("Auto Farm Stopped!")
+FarmSection:NewToggle("Auto Farm Level", "Automatically farm level", function(state)
+    States.AutoFarmLevel = state
+    print("Auto Farm Level: " .. tostring(state))
 end)
 
--- Auto Quest Category
-local AutoQuestFrame = createCategory("Auto Quest", 240)
-createButton(AutoQuestFrame, "Start Auto Quest", 40, function()
-    print("Auto Quest Started!")
-end)
-createButton(AutoQuestFrame, "Stop Auto Quest", 80, function()
-    print("Auto Quest Stopped!")
+FarmSection:NewToggle("Auto Farm Nearest", "Automatically farm nearest enemies", function(state)
+    States.AutoFarmNearest = state
+    print("Auto Farm Nearest: " .. tostring(state))
 end)
 
--- Teleport Category
-local TeleportFrame = createCategory("Teleport", 360)
-createButton(TeleportFrame, "Teleport to NPC", 40, function()
-    print("Teleported to NPC!")
-end)
-createButton(TeleportFrame, "Teleport to Island", 80, function()
-    print("Teleported to Island!")
+FarmSection:NewToggle("Auto Farm Boss", "Automatically farm bosses", function(state)
+    States.AutoFarmBoss = state
+    print("Auto Farm Boss: " .. tostring(state))
 end)
 
--- Shop Category
-local ShopFrame = createCategory("Shop", 480)
-createButton(ShopFrame, "Buy Health Potion", 40, function()
-    print("Health Potion Purchased!")
-end)
-createButton(ShopFrame, "Buy Stamina Potion", 80, function()
-    print("Stamina Potion Purchased!")
+--------------------
+-- 📌 TELEPORT MENU
+--------------------
+local TeleportSection = TeleportTab:NewSection("Teleport")
+
+TeleportSection:NewButton("Teleport to Starter Island", "Teleport to Starter Island", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, 10, 0)
+    print("Teleported to Starter Island")
 end)
 
--- Settings Category
-local SettingsFrame = createCategory("Settings", 600)
-createButton(SettingsFrame, "Toggle God Mode", 40, function()
-    print("God Mode Toggled!")
-end)
-createButton(SettingsFrame, "Toggle Anti AFK", 80, function()
-    print("Anti AFK Toggled!")
+TeleportSection:NewButton("Teleport to Marine Fortress", "Teleport to Marine Fortress", function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(1000, 10, 1000)
+    print("Teleported to Marine Fortress")
 end)
 
-print("Script has been successfully initialized with logo!")
+--------------------
+-- 📌 VISUAL MENU (ESP & Aimbot)
+--------------------
+local VisualSection = VisualTab:NewSection("ESP & Aimbot")
+
+States.ESP = false
+States.Aimbot = false
+
+VisualSection:NewToggle("Enable ESP", "See through walls", function(state)
+    States.ESP = state
+    print("ESP: " .. tostring(state))
+end)
+
+VisualSection:NewToggle("Enable Aimbot", "Auto aim at enemies", function(state)
+    States.Aimbot = state
+    print("Aimbot: " .. tostring(state))
+end)
+
+--------------------
+-- 📌 STATS MENU (Auto Points)
+--------------------
+local StatsSection = StatsTab:NewSection("Auto Stats")
+
+StatsSection:NewButton("Auto Increase Melee", "Automatically add points to Melee", function()
+    print("Auto Increasing Melee Points")
+end)
+
+StatsSection:NewButton("Auto Increase Defense", "Automatically add points to Defense", function()
+    print("Auto Increasing Defense Points")
+end)
+
+--------------------
+-- 📌 FRUIT & RAID MENU
+--------------------
+local FruitRaidSection = FruitRaidTab:NewSection("Fruit & Raid")
+
+FruitRaidSection:NewButton("Auto Collect Devil Fruit", "Automatically collect Devil Fruits", function()
+    print("Auto Collecting Devil Fruit")
+end)
+
+FruitRaidSection:NewButton("Auto Raid Boss", "Automatically join Raid Boss", function()
+    print("Auto Raiding Boss")
+end)
+
+--------------------
+-- 📌 CHEST MENU (Auto Collect Chests)
+--------------------
+local ChestSection = ChestTab:NewSection("Auto Chest")
+
+ChestSection:NewButton("Auto Collect Chests", "Automatically collect all chests", function()
+    print("Auto Collecting Chests")
+end)
+
+--------------------
+-- 📌 MISC MENU (Reset, Disable All)
+--------------------
+local MiscSection = MiscTab:NewSection("Misc Settings")
+
+MiscSection:NewButton("Reset Character", "Reset your character", function()
+    game.Players.LocalPlayer.Character.Humanoid.Health = 0
+    print("Character Reset")
+end)
+
+MiscSection:NewButton("Disable All", "Disable all features", function()
+    for key, _ in pairs(States) do
+        States[key] = false
+    end
+    print("All functions disabled")
+end)
