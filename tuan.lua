@@ -1,23 +1,13 @@
---// Load Orion Library (Nếu OrionLib không có trong ReplicatedStorage, tải từ web)
+--// UI Library (Mobile Friendly)
 local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source"))()
+local Window = OrionLib:MakeWindow({Name = "BloxFruits Hub", HidePremium = false, SaveConfig = true, ConfigFolder = "BloxFruitsConfig"})
 
---// Tạo UI Window
-local Window = OrionLib:MakeWindow({
-    Name = "BloxFruits Hub",
-    HidePremium = false,
-    SaveConfig = true,
-    ConfigFolder = "BloxFruitsConfig"
-})
-
---// Tạo bảng lưu trạng thái các chức năng
+--// Tạo bảng chứa trạng thái các chức năng
 local States = {}
 
 --// Auto Farm Tab
-local FarmTab = Window:MakeTab({
-    Name = "Auto Farm",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
+local FarmTab = Window:MakeTab({Name = "Auto Farm", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+States.AutoFarm = false
 
 FarmTab:AddToggle({
     Name = "Auto Farm Level",
@@ -48,11 +38,7 @@ FarmTab:AddToggle({
 })
 
 --// Teleport Tab
-local TeleportTab = Window:MakeTab({
-    Name = "Teleport",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
+local TeleportTab = Window:MakeTab({Name = "Teleport", Icon = "rbxassetid://4483345998", PremiumOnly = false})
 
 TeleportTab:AddButton({
     Name = "Teleport to Starter Island",
@@ -71,11 +57,7 @@ TeleportTab:AddButton({
 })
 
 --// ESP & Aimbot Tab
-local VisualTab = Window:MakeTab({
-    Name = "ESP & Aimbot",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
+local VisualTab = Window:MakeTab({Name = "ESP & Aimbot", Icon = "rbxassetid://4483345998", PremiumOnly = false})
 
 VisualTab:AddToggle({
     Name = "Enable ESP",
@@ -106,11 +88,7 @@ VisualTab:AddToggle({
 })
 
 --// Auto Stats Tab
-local StatsTab = Window:MakeTab({
-    Name = "Auto Stats",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
+local StatsTab = Window:MakeTab({Name = "Auto Stats", Icon = "rbxassetid://4483345998", PremiumOnly = false})
 
 StatsTab:AddButton({
     Name = "Auto Increase Melee",
@@ -129,11 +107,7 @@ StatsTab:AddButton({
 })
 
 --// Auto Chest Tab
-local ChestTab = Window:MakeTab({
-    Name = "Auto Chest",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
+local ChestTab = Window:MakeTab({Name = "Auto Chest", Icon = "rbxassetid://4483345998", PremiumOnly = false})
 
 ChestTab:AddButton({
     Name = "Auto Collect Chests",
@@ -144,11 +118,7 @@ ChestTab:AddButton({
 })
 
 --// Misc Tab
-local MiscTab = Window:MakeTab({
-    Name = "Misc Settings",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
+local MiscTab = Window:MakeTab({Name = "Misc Settings", Icon = "rbxassetid://4483345998", PremiumOnly = false})
 
 MiscTab:AddButton({
     Name = "Reset Character",
@@ -158,7 +128,7 @@ MiscTab:AddButton({
     end
 })
 
-MiscTab:AddButton({
+MiscTabAddButton({
     Name = "Disable All",
     Callback = function()
         for key, _ in pairs(States) do
@@ -168,5 +138,5 @@ MiscTab:AddButton({
     end
 })
 
---// Hiện menu
+--// Presently menu
 OrionLib:Init()
