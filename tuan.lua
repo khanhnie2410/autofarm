@@ -1,139 +1,142 @@
--- Load UI Library
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/khanhnie2410/autofarm/refs/heads/main/tuan.lua"))()
-local Window = Library.CreateLib("Redz Hub - Custom", "DarkTheme")
+--// UI Library (Mobile Friendly)
+local OrionLib = require(game:GetService("ReplicatedStorage"):WaitForChild("OrionLib"))
+local Window = OrionLib:MakeWindow({Name = "BloxFruits Hub", HidePremium = false, SaveConfig = true, ConfigFolder = "BloxFruitsConfig"})
 
--- Create Logo Button (Small) - Top Left Corner
-local logoButton = Instance.new("ImageButton")
-logoButton.Parent = game.CoreGui:FindFirstChild("Redz Hub - Custom") or game.Players.LocalPlayer.PlayerGui:FindFirstChild("Redz Hub - Custom")
-logoButton.Size = UDim2.new(0, 40, 0, 40) -- Smaller Logo
-logoButton.Position = UDim2.new(0, 10, 0, 10) -- Top-Left Corner
-logoButton.BackgroundTransparency = 1
-logoButton.Image = "rbxassetid://140432928117878" -- Logo ID
-
--- Toggle UI Visibility
-local isVisible = true
-logoButton.MouseButton1Click:Connect(function()
-    isVisible = not isVisible
-    Window:ToggleUI(isVisible)
-end)
-
--- Define States for Features
+--// Tạo bảng chứa trạng thái các chức năng
 local States = {}
 
--- Create Tabs
-local FarmTab = Window:NewTab("Farm")
-local TeleportTab = Window:NewTab("Teleport")
-local VisualTab = Window:NewTab("Visual")
-local StatsTab = Window:NewTab("Stats")
-local FruitRaidTab = Window:NewTab("Fruit/Raid")
-local ChestTab = Window:NewTab("Chest")
-local MiscTab = Window:NewTab("Misc")
+--// Auto Farm Tab
+local FarmTab = Window:MakeTab({Name = "Auto Farm", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+States.AutoFarm = false
 
---------------------
--- 📌 FARM MENU
---------------------
-local FarmSection = FarmTab:NewSection("Auto Farm")
-
-States.AutoFarmLevel = false
-States.AutoFarmNearest = false
-States.AutoFarmBoss = false
-
-FarmSection:NewToggle("Auto Farm Level", "Automatically farm level", function(state)
-    States.AutoFarmLevel = state
-    print("Auto Farm Level: " .. tostring(state))
-end)
-
-FarmSection:NewToggle("Auto Farm Nearest", "Automatically farm nearest enemies", function(state)
-    States.AutoFarmNearest = state
-    print("Auto Farm Nearest: " .. tostring(state))
-end)
-
-FarmSection:NewToggle("Auto Farm Boss", "Automatically farm bosses", function(state)
-    States.AutoFarmBoss = state
-    print("Auto Farm Boss: " .. tostring(state))
-end)
-
---------------------
--- 📌 TELEPORT MENU
---------------------
-local TeleportSection = TeleportTab:NewSection("Teleport")
-
-TeleportSection:NewButton("Teleport to Starter Island", "Teleport to Starter Island", function()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, 10, 0)
-    print("Teleported to Starter Island")
-end)
-
-TeleportSection:NewButton("Teleport to Marine Fortress", "Teleport to Marine Fortress", function()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(1000, 10, 1000)
-    print("Teleported to Marine Fortress")
-end)
-
---------------------
--- 📌 VISUAL MENU (ESP & Aimbot)
---------------------
-local VisualSection = VisualTab:NewSection("ESP & Aimbot")
-
-States.ESP = false
-States.Aimbot = false
-
-VisualSection:NewToggle("Enable ESP", "See through walls", function(state)
-    States.ESP = state
-    print("ESP: " .. tostring(state))
-end)
-
-VisualSection:NewToggle("Enable Aimbot", "Auto aim at enemies", function(state)
-    States.Aimbot = state
-    print("Aimbot: " .. tostring(state))
-end)
-
---------------------
--- 📌 STATS MENU (Auto Points)
---------------------
-local StatsSection = StatsTab:NewSection("Auto Stats")
-
-StatsSection:NewButton("Auto Increase Melee", "Automatically add points to Melee", function()
-    print("Auto Increasing Melee Points")
-end)
-
-StatsSection:NewButton("Auto Increase Defense", "Automatically add points to Defense", function()
-    print("Auto Increasing Defense Points")
-end)
-
---------------------
--- 📌 FRUIT & RAID MENU
---------------------
-local FruitRaidSection = FruitRaidTab:NewSection("Fruit & Raid")
-
-FruitRaidSection:NewButton("Auto Collect Devil Fruit", "Automatically collect Devil Fruits", function()
-    print("Auto Collecting Devil Fruit")
-end)
-
-FruitRaidSection:NewButton("Auto Raid Boss", "Automatically join Raid Boss", function()
-    print("Auto Raiding Boss")
-end)
-
---------------------
--- 📌 CHEST MENU (Auto Collect Chests)
---------------------
-local ChestSection = ChestTab:NewSection("Auto Chest")
-
-ChestSection:NewButton("Auto Collect Chests", "Automatically collect all chests", function()
-    print("Auto Collecting Chests")
-end)
-
---------------------
--- 📌 MISC MENU (Reset, Disable All)
---------------------
-local MiscSection = MiscTab:NewSection("Misc Settings")
-
-MiscSection:NewButton("Reset Character", "Reset your character", function()
-    game.Players.LocalPlayer.Character.Humanoid.Health = 0
-    print("Character Reset")
-end)
-
-MiscSection:NewButton("Disable All", "Disable all features", function()
-    for key, _ in pairs(States) do
-        States[key] = false
+FarmTab:AddToggle({
+    Name = "Auto Farm Level",
+    Default = false,
+    Callback = function(state)
+        States.AutoFarm = state
+        if state then
+            print("Auto Farm Level Enabled")
+            -- Logic Auto Farm Level
+        else
+            print("Auto Farm Level Disabled")
+        end
     end
-    print("All functions disabled")
-end)
+})
+
+FarmTab:AddToggle({
+    Name = "Auto Farm Boss",
+    Default = false,
+    Callback = function(state)
+        States.AutoFarmBoss = state
+        if state then
+            print("Auto Farm Boss Enabled")
+            -- Logic Auto Farm Boss
+        else
+            print("Auto Farm Boss Disabled")
+        end
+    end
+})
+
+--// Teleport Tab
+local TeleportTab = Window:MakeTab({Name = "Teleport", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+
+TeleportTab:AddButton({
+    Name = "Teleport to Starter Island",
+    Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, 10, 0)
+        print("Teleported to Starter Island")
+    end
+})
+
+TeleportTab:AddButton({
+    Name = "Teleport to Marine Fortress",
+    Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(1000, 10, 1000)
+        print("Teleported to Marine Fortress")
+    end
+})
+
+--// ESP & Aimbot Tab
+local VisualTab = Window:MakeTab({Name = "ESP & Aimbot", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+
+VisualTab:AddToggle({
+    Name = "Enable ESP",
+    Default = false,
+    Callback = function(state)
+        States.ESP = state
+        if state then
+            print("ESP Enabled")
+            -- Logic ESP
+        else
+            print("ESP Disabled")
+        end
+    end
+})
+
+VisualTab:AddToggle({
+    Name = "Enable Aimbot",
+    Default = false,
+    Callback = function(state)
+        States.Aimbot = state
+        if state then
+            print("Aimbot Enabled")
+            -- Logic Aimbot
+        else
+            print("Aimbot Disabled")
+        end
+    end
+})
+
+--// Auto Stats Tab
+local StatsTab = Window:MakeTab({Name = "Auto Stats", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+
+StatsTab:AddButton({
+    Name = "Auto Increase Melee",
+    Callback = function()
+        print("Auto Increasing Melee Points")
+        -- Logic tăng điểm Melee
+    end
+})
+
+StatsTab:AddButton({
+    Name = "Auto Increase Defense",
+    Callback = function()
+        print("Auto Increasing Defense Points")
+        -- Logic tăng điểm Defense
+    end
+})
+
+--// Auto Chest Tab
+local ChestTab = Window:MakeTab({Name = "Auto Chest", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+
+ChestTab:AddButton({
+    Name = "Auto Collect Chests",
+    Callback = function()
+        print("Auto Collecting Chests")
+        -- Logic tự động nhặt rương
+    end
+})
+
+--// Misc Tab
+local MiscTab = Window:MakeTab({Name = "Misc Settings", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+
+MiscTab:AddButton({
+    Name = "Reset Character",
+    Callback = function()
+        game.Players.LocalPlayer.Character.Humanoid.Health = 0
+        print("Character Reset")
+    end
+})
+
+MiscTab:AddButton({
+    Name = "Disable All",
+    Callback = function()
+        for key, _ in pairs(States) do
+            States[key] = false
+        end
+        print("All functions disabled")
+    end
+})
+
+--// Hiện menu
+OrionLib:Init()
