@@ -2,7 +2,7 @@
 local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source"))()
 local Window = OrionLib:MakeWindow({Name = "BloxFruits Hub", HidePremium = false, SaveConfig = true, ConfigFolder = "BloxFruitsConfig"})
 
---// Tạo bảng chứa trạng thái các chức năng
+--// Create a table containing the status of the functions
 local States = {}
 
 --// Auto Farm Tab
@@ -128,7 +128,7 @@ MiscTab:AddButton({
     end
 })
 
-MiscTabAddButton({
+MiscTab:AddButton({
     Name = "Disable All",
     Callback = function()
         for key, _ in pairs(States) do
@@ -138,5 +138,5 @@ MiscTabAddButton({
     end
 })
 
---// Presently menu
+--// Initialize UI
 OrionLib:Init()
