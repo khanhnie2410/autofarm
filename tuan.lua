@@ -1,12 +1,21 @@
---// Load OrionLib
+--// Load UI Library (Orion Library)
 local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source"))()
-local Window = OrionLib:MakeWindow({Name = "BloxFruits Hub", HidePremium = false, SaveConfig = true, ConfigFolder = "BloxFruitsConfig"})
+local Window = OrionLib:MakeWindow({
+    Name = "Blox Fruits Hub",
+    HidePremium = false,
+    SaveConfig = true,
+    ConfigFolder = "BloxFruitsConfig"
+})
 
---// States to track function status
+--// Table to store function states
 local States = {}
 
 --// Auto Farm Tab
-local FarmTab = Window:MakeTab({Name = "Auto Farm", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+local FarmTab = Window:MakeTab({
+    Name = "Auto Farm",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
 States.AutoFarm = false
 
 FarmTab:AddToggle({
@@ -16,7 +25,7 @@ FarmTab:AddToggle({
         States.AutoFarm = state
         if state then
             print("Auto Farm Level Enabled")
-            -- Logic for Auto Farm Level
+            -- Add Auto Farm Level logic here
         else
             print("Auto Farm Level Disabled")
         end
@@ -30,7 +39,7 @@ FarmTab:AddToggle({
         States.AutoFarmBoss = state
         if state then
             print("Auto Farm Boss Enabled")
-            -- Logic for Auto Farm Boss
+            -- Add Auto Farm Boss logic here
         else
             print("Auto Farm Boss Disabled")
         end
@@ -38,7 +47,11 @@ FarmTab:AddToggle({
 })
 
 --// Teleport Tab
-local TeleportTab = Window:MakeTab({Name = "Teleport", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+local TeleportTab = Window:MakeTab({
+    Name = "Teleport",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
 
 TeleportTab:AddButton({
     Name = "Teleport to Starter Island",
@@ -57,7 +70,11 @@ TeleportTab:AddButton({
 })
 
 --// ESP & Aimbot Tab
-local VisualTab = Window:MakeTab({Name = "ESP & Aimbot", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+local VisualTab = Window:MakeTab({
+    Name = "ESP & Aimbot",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
 
 VisualTab:AddToggle({
     Name = "Enable ESP",
@@ -66,7 +83,7 @@ VisualTab:AddToggle({
         States.ESP = state
         if state then
             print("ESP Enabled")
-            -- Logic for ESP
+            -- Add ESP logic here
         else
             print("ESP Disabled")
         end
@@ -80,7 +97,7 @@ VisualTab:AddToggle({
         States.Aimbot = state
         if state then
             print("Aimbot Enabled")
-            -- Logic for Aimbot
+            -- Add Aimbot logic here
         else
             print("Aimbot Disabled")
         end
@@ -88,13 +105,17 @@ VisualTab:AddToggle({
 })
 
 --// Auto Stats Tab
-local StatsTab = Window:MakeTab({Name = "Auto Stats", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+local StatsTab = Window:MakeTab({
+    Name = "Auto Stats",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
 
 StatsTab:AddButton({
     Name = "Auto Increase Melee",
     Callback = function()
         print("Auto Increasing Melee Points")
-        -- Logic to increase Melee
+        -- Add Melee auto stat logic here
     end
 })
 
@@ -102,23 +123,31 @@ StatsTab:AddButton({
     Name = "Auto Increase Defense",
     Callback = function()
         print("Auto Increasing Defense Points")
-        -- Logic to increase Defense
+        -- Add Defense auto stat logic here
     end
 })
 
 --// Auto Chest Tab
-local ChestTab = Window:MakeTab({Name = "Auto Chest", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+local ChestTab = Window:MakeTab({
+    Name = "Auto Chest",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
 
 ChestTab:AddButton({
     Name = "Auto Collect Chests",
     Callback = function()
         print("Auto Collecting Chests")
-        -- Logic to collect Chests
+        -- Add Auto Chest logic here
     end
 })
 
---// Misc Tab
-local MiscTab = Window:MakeTab({Name = "Misc Settings", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+--// Miscellaneous Tab
+local MiscTab = Window:MakeTab({
+    Name = "Misc Settings",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
 
 MiscTab:AddButton({
     Name = "Reset Character",
@@ -129,7 +158,7 @@ MiscTab:AddButton({
 })
 
 MiscTab:AddButton({
-    Name = "Disable All",
+    Name = "Disable All Features",
     Callback = function()
         for key, _ in pairs(States) do
             States[key] = false
@@ -138,5 +167,5 @@ MiscTab:AddButton({
     end
 })
 
---// Initialize Menu
+--// Initialize UI
 OrionLib:Init()
