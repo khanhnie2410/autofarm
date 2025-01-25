@@ -35,59 +35,44 @@ local function createButton(name, position, func)
     button.MouseButton1Click:Connect(func)
 end
 
--- Add item function
+-- Add item function (for Admin)
 local function addItem()
-    -- Implement your logic for adding an item here
     print("Add Item clicked!")
+    -- Add your logic to add items here
 end
 
--- Remove item function
+-- Remove item function (for Admin)
 local function removeItem()
-    -- Implement your logic for removing an item here
     print("Remove Item clicked!")
+    -- Add your logic to remove items here
 end
 
--- Change booth color function
+-- Change booth color function (for VIP)
 local function changeBoothColor()
-    -- Implement your logic for changing booth color here
     print("Change Booth Color clicked!")
+    -- Add your logic to change booth color here
 end
 
--- Create buttons for the menu
-createButton("Add Item", UDim2.new(0, 0, 0.1, 0), addItem)
-createButton("Remove Item", UDim2.new(0, 0, 0.2, 0), removeItem)
-createButton("Change Booth Color", UDim2.new(0, 0, 0.3, 0), changeBoothColor)
-
--- Admin and VIP Functions (Permissions check)
-local isAdmin = false  -- Set this to true if the player is an admin
-local isVIP = false    -- Set this to true if the player is VIP
-
--- Example of VIP feature: VIP can change booth color for free
-if isVIP then
-    -- Add VIP specific features here (like free booth color change)
-    local vipBoothColorChange = Instance.new("TextButton")
-    vipBoothColorChange.Parent = frame
-    vipBoothColorChange.Size = UDim2.new(1, 0, 0.1, 0)
-    vipBoothColorChange.Position = UDim2.new(0, 0, 0.4, 0)
-    vipBoothColorChange.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    vipBoothColorChange.TextColor3 = Color3.fromRGB(0, 255, 0)
-    vipBoothColorChange.Text = "VIP: Change Booth Color (Free)"
-    vipBoothColorChange.TextSize = 20
-    vipBoothColorChange.TextAlign = Enum.TextAlign.Center
-    vipBoothColorChange.MouseButton1Click:Connect(changeBoothColor)
+-- Admin function to check if player is Admin
+local function isAdmin(player)
+    -- Replace with your actual admin check (e.g., check for group rank, game pass, etc.)
+    return player.UserId == 123456789 -- Example: change this to a specific user ID or other check
 end
 
--- Example of Admin features: Admins can add/remove items
-if isAdmin then
-    -- Admin-specific functionality can be added here, such as item management
-    local adminAddItemButton = Instance.new("TextButton")
-    adminAddItemButton.Parent = frame
-    adminAddItemButton.Size = UDim2.new(1, 0, 0.1, 0)
-    adminAddItemButton.Position = UDim2.new(0, 0, 0.5, 0)
-    adminAddItemButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    adminAddItemButton.TextColor3 = Color3.fromRGB(0, 255, 0)
-    adminAddItemButton.Text = "Admin: Add Item"
-    adminAddItemButton.TextSize = 20
-    adminAddItemButton.TextAlign = Enum.TextAlign.Center
-    adminAddItemButton.MouseButton1Click:Connect(addItem)
+-- VIP function to check if player is VIP
+local function isVIP(player)
+    -- Replace with your actual VIP check (e.g., check for group rank, game pass, etc.)
+    return player.UserId == 987654321 -- Example: change this to a specific user ID or other check
+end
+
+-- Example of adding functionality based on Admin and VIP status
+if isAdmin(player) then
+    -- Admin specific buttons
+    createButton("Add Item", UDim2.new(0, 0, 0.1, 0), addItem)
+    createButton("Remove Item", UDim2.new(0, 0, 0.2, 0), removeItem)
+end
+
+if isVIP(player) then
+    -- VIP specific button
+    createButton("VIP: Change Booth Color (Free)", UDim2.new(0, 0, 0.3, 0), changeBoothColor)
 end
