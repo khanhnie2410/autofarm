@@ -1,8 +1,8 @@
---// UI Library (Mobile Friendly)
+--// Load OrionLib
 local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source"))()
 local Window = OrionLib:MakeWindow({Name = "BloxFruits Hub", HidePremium = false, SaveConfig = true, ConfigFolder = "BloxFruitsConfig"})
 
---// Create a table containing the status of the functions
+--// States to track function status
 local States = {}
 
 --// Auto Farm Tab
@@ -16,7 +16,7 @@ FarmTab:AddToggle({
         States.AutoFarm = state
         if state then
             print("Auto Farm Level Enabled")
-            -- Logic Auto Farm Level
+            -- Logic for Auto Farm Level
         else
             print("Auto Farm Level Disabled")
         end
@@ -30,7 +30,7 @@ FarmTab:AddToggle({
         States.AutoFarmBoss = state
         if state then
             print("Auto Farm Boss Enabled")
-            -- Logic Auto Farm Boss
+            -- Logic for Auto Farm Boss
         else
             print("Auto Farm Boss Disabled")
         end
@@ -66,7 +66,7 @@ VisualTab:AddToggle({
         States.ESP = state
         if state then
             print("ESP Enabled")
-            -- Logic ESP
+            -- Logic for ESP
         else
             print("ESP Disabled")
         end
@@ -80,7 +80,7 @@ VisualTab:AddToggle({
         States.Aimbot = state
         if state then
             print("Aimbot Enabled")
-            -- Logic Aimbot
+            -- Logic for Aimbot
         else
             print("Aimbot Disabled")
         end
@@ -94,7 +94,7 @@ StatsTab:AddButton({
     Name = "Auto Increase Melee",
     Callback = function()
         print("Auto Increasing Melee Points")
-        -- Logic tăng điểm Melee
+        -- Logic to increase Melee
     end
 })
 
@@ -102,7 +102,7 @@ StatsTab:AddButton({
     Name = "Auto Increase Defense",
     Callback = function()
         print("Auto Increasing Defense Points")
-        -- Logic tăng điểm Defense
+        -- Logic to increase Defense
     end
 })
 
@@ -113,7 +113,7 @@ ChestTab:AddButton({
     Name = "Auto Collect Chests",
     Callback = function()
         print("Auto Collecting Chests")
-        -- Logic tự động nhặt rương
+        -- Logic to collect Chests
     end
 })
 
@@ -138,5 +138,5 @@ MiscTab:AddButton({
     end
 })
 
---// Initialize UI
+--// Initialize Menu
 OrionLib:Init()
