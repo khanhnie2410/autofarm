@@ -114,6 +114,29 @@ local function AutoFarmBoss()
     print("Auto Farm Boss is active")
 end
 
+-- Auto Farm Level
+local function AutoFarmLevel()
+    -- Logic to farm level in Blox Fruits
+    print("Auto Farm Level is active")
+
+    -- Target level to farm, adjust as needed
+    local targetLevel = 100  
+    
+    -- Get all enemies in the area
+    local enemies = game:GetService("Workspace"):GetChildren()
+    for _, enemy in ipairs(enemies) do
+        -- Check if the enemy is an NPC with health
+        if enemy:IsA("Model") and enemy:FindFirstChild("Humanoid") then
+            local humanoid = enemy:FindFirstChild("Humanoid")
+            if humanoid.Health > 0 and humanoid.Level >= targetLevel then
+                -- Attack the enemy
+                attackEnemy(enemy) -- Define attackEnemy() to perform the attack
+                waitForCooldown() -- Define waitForCooldown() to handle attack intervals
+            end
+        end
+    end
+end
+
 -- Utility Features
 
 -- Fix Lag (Level 1)
@@ -164,12 +187,6 @@ local function AutoHopServer()
     print("Auto Hop Server is active")
 end
 
--- Auto Ship Farm
-local function AutoShipFarm()
-    -- Code logic for Auto Ship Farm
-    print("Auto Ship Farm is active")
-end
-
 -- Webhook Logger (for logging information to Discord)
 local function WebhookLogger()
     -- Code logic for Webhook Logger
@@ -208,6 +225,7 @@ local function Initialize()
     AutoDungeonLaw()
     AutoQuestChain()
     AutoFarmBoss()
+    AutoFarmLevel() -- Add Auto Farm Level here
     FixLagLevel1()
     FixLagLevel2()
     FixLagLevel3()
@@ -216,7 +234,6 @@ local function Initialize()
     AutoBuy()
     AutoSeaKingFarm()
     AutoHopServer()
-    AutoShipFarm()
     WebhookLogger()
 end
 
