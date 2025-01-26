@@ -121,7 +121,7 @@ local function AutoFarmLevel()
 
     -- Target level to farm, adjust as needed
     local targetLevel = 100  
-    
+
     -- Get all enemies in the area
     local enemies = game:GetService("Workspace"):GetChildren()
     for _, enemy in ipairs(enemies) do
@@ -130,8 +130,8 @@ local function AutoFarmLevel()
             local humanoid = enemy:FindFirstChild("Humanoid")
             if humanoid.Health > 0 and humanoid.Level >= targetLevel then
                 -- Attack the enemy
-                attackEnemy(enemy) -- Define attackEnemy() to perform the attack
-                waitForCooldown() -- Define waitForCooldown() to handle attack intervals
+                attackEnemy(enemy) -- Call to attackEnemy function
+                waitForCooldown() -- Call to waitForCooldown function
             end
         end
     end
@@ -245,6 +245,12 @@ local function attackEnemy(enemy)
         humanoid.Health = 0  -- Example of reducing health to 0 (or apply another attack logic)
         print("Attacking " .. enemy.Name)
     end
+end
+
+-- Wait for cooldown (optional, depends on game mechanics)
+local function waitForCooldown()
+    wait(1)  -- Wait for 1 second before the next action
+    print("Cooldown completed")
 end
 
 -- Initialize all features
