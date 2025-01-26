@@ -1,8 +1,3 @@
--- GUI setup for Admin and VIP Menu
-local player = game.Players.LocalPlayer
-local screenGui = Instance.new("ScreenGui")
-screenGui.Parent = player:WaitForChild("PlayerGui")
-
 -- Main Frame
 local frame = Instance.new("Frame")
 frame.Parent = screenGui
