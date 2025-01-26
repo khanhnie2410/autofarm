@@ -153,7 +153,16 @@ end
 
 -- Fix Lag (Level 3)
 local function FixLagLevel3()
-    -- Code logic for Fix Lag Level 3
+    -- Optimize system for better performance
+    game:GetService("Lighting").Ambient = Color3.fromRGB(0, 0, 0)
+    game:GetService("Lighting").OutdoorAmbient = Color3.fromRGB(0, 0, 0)
+    game:GetService("Lighting").GlobalShadows = false
+    game:GetService("ReplicatedStorage").GameSettings.GraphicsQuality = Enum.GraphicsQuality.Low
+    game:GetService("ReplicatedStorage").GameSettings.MeshDetail = Enum.MeshDetail.Low
+    game:GetService("ReplicatedStorage").GameSettings.TextureQuality = Enum.TextureQuality.Low
+    game:GetService("ReplicatedStorage").GameSettings.ShadowQuality = Enum.ShadowQuality.Low
+    game:GetService("ReplicatedStorage").GameSettings.SoundsEnabled = false
+
     print("Fix Lag Level 3 is active")
 end
 
@@ -202,6 +211,40 @@ end
 local function AutoTrade()
     -- Code logic for Auto Trade
     print("Auto Trade is active")
+end
+
+-- Helper Functions for Combat and Enemies
+
+-- Get closest enemy
+local function getClosestEnemy()
+    local closestEnemy = nil
+    local minDistance = math.huge  -- Initial large distance value
+
+    -- Iterate through all objects in Workspace
+    for _, obj in ipairs(game:GetService("Workspace"):GetChildren()) do
+        -- Check if object is an NPC or enemy
+        if obj:IsA("Model") and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("Head") then
+            local humanoid = obj:FindFirstChild("Humanoid")
+            local distance = (obj.Head.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+            -- Find the closest enemy
+            if distance < minDistance then
+                minDistance = distance
+                closestEnemy = obj
+            end
+        end
+    end
+
+    return closestEnemy
+end
+
+-- Attack the enemy
+local function attackEnemy(enemy)
+    if enemy and enemy:FindFirstChild("Humanoid") then
+        local humanoid = enemy:FindFirstChild("Humanoid")
+        -- Attack the enemy (reduce health, or use a skill)
+        humanoid.Health = 0  -- Example of reducing health to 0 (or apply another attack logic)
+        print("Attacking " .. enemy.Name)
+    end
 end
 
 -- Initialize all features
