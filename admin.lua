@@ -1,508 +1,103 @@
--- Full Script (Server + Client) for Donation and Admin Functions
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local DonationEvent = Instance.new("RemoteEvent", ReplicatedStorage)
-DonationEvent.Name = "ForceDonation"
+-- GUI setup for Admin and VIP Menu
+local player = game.Players.LocalPlayer
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = player:WaitForChild("PlayerGui")
 
-local MIN_DONATE_AMOUNT = 5  -- Minimum Robux to donate
+-- Main Frame
+local frame = Instance.new("Frame")
+frame.Parent = screenGui
+frame.Size = UDim2.new(0.3, 0, 0.5, 0)
+frame.Position = UDim2.new(0.35, 0, 0.25, 0)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)  -- Dark background
+frame.BorderSizePixel = 0
 
--- Function to check if the player is an admin
+-- Title for the menu
+local title = Instance.new("TextLabel")
+title.Parent = frame
+title.Size = UDim2.new(1, 0, 0.1, 0)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "Admin VIP Menu"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White text
+title.TextSize = 24
+title.TextAlign = Enum.TextAlign.Center
+
+-- Create Button function
+local function createButton(name, position, func)
+    local button = Instance.new("TextButton")
+    button.Parent = frame
+    button.Size = UDim2.new(1, 0, 0.1, 0)
+    button.Position = position
+    button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)  -- Dark button color
+    button.TextColor3 = Color3.fromRGB(0, 255, 0)  -- Green text
+    button.Text = name
+    button.TextSize = 20
+    button.TextAlign = Enum.TextAlign.Center
+    button.MouseButton1Click:Connect(func)
+end
+
+-- Functions for Admin
+local function addItem()
+    print("Add Item clicked!")
+    -- Admin functionality: Logic to add item to inventory or display
+end
+
+local function removeItem()
+    print("Remove Item clicked!")
+    -- Admin functionality: Logic to remove item from inventory or display
+end
+
+-- Functions for VIP
+local function changeBoothColor()
+    print("Change Booth Color clicked!")
+    -- VIP functionality: Logic to change booth color
+end
+
+local function increaseDonations()
+    print("Increase Donations clicked!")
+    -- VIP functionality: Logic to give more Robux or donation benefits
+end
+
+-- Check if player is admin
 local function isAdmin(player)
-    -- The player who runs the script (turns it on) will be the admin
-    return player == game.Players.LocalPlayer
+    -- Replace with your actual admin check (e.g., check for group rank, game pass, etc.)
+    return player.UserId == 123456789  -- Example: change this to a specific user ID or other check
 end
 
--- Server-Side Donation Handling
-DonationEvent.OnServerEvent:Connect(function(player, targetPlayer, amount)
-    if not isAdmin(player) then
-        player:Kick("You do not have permission to donate.")
-        return
-    end
-
-    if targetPlayer and amount >= MIN_DONATE_AMOUNT then
-        local success, err = pcall(function()
-            -- Simulate the donation process
-            print(player.Name .. " donated " .. amount .. " Robux to " .. targetPlayer.Name)
-        end)
-
-        if success then
-            player:Kick("Donation of " .. amount .. " Robux successfully sent to " .. targetPlayer.Name)
-        else
-            warn("Error during donation: " .. err)
-        end
-    else
-        player:Kick("You must donate at least " .. MIN_DONATE_AMOUNT .. " Robux.")
-    end
-end)
-
--- Client-Side Donation Interface
-local function createDonationInterface()
-    local gui = Instance.new("ScreenGui")
-    gui.Name = "DonationInterface"
-    gui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-
-    local frame = Instance.new("Frame", gui)
-    frame.Size = UDim2.new(0.3, 0, 0.3, 0)
-    frame.Position = UDim2.new(0.35, 0, 0.35, 0)
-    frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    frame.BorderSizePixel = 0
-
-    local titleLabel = Instance.new("TextLabel", frame)
-    titleLabel.Size = UDim2.new(1, 0, 0.2, 0)
-    titleLabel.Position = UDim2.new(0, 0, 0, 0)
-    titleLabel.Text = "Force Donation"
-    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    titleLabel.BackgroundTransparency = 1
-    titleLabel.Font = Enum.Font.SourceSansBold
-    titleLabel.TextSize = 20
-
-    local robuxLabel = Instance.new("TextLabel", frame)
-    robuxLabel.Size = UDim2.new(1, 0, 0.15, 0)
-    robuxLabel.Position = UDim2.new(0, 0, 0.2, 0)
-    robuxLabel.Text = "Enter Robux Amount (5+):"
-    robuxLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-    robuxLabel.BackgroundTransparency = 1
-    robuxLabel.Font = Enum.Font.SourceSans
-    robuxLabel.TextSize = 16
-
-    local robuxBox = Instance.new("TextBox", frame)
-    robuxBox.Size = UDim2.new(1, 0, 0.15, 0)
-    robuxBox.Position = UDim2.new(0, 0, 0.35, 0)
-    robuxBox.PlaceholderText = "Enter amount"
-    robuxBox.Text = ""
-    robuxBox.Font = Enum.Font.SourceSans
-    robuxBox.TextSize = 16
-    robuxBox.TextColor3 = Color3.fromRGB(0, 0, 0)
-
-    local donateButton = Instance.new("TextButton", frame)
-    donateButton.Size = UDim2.new(0.5, 0, 0.2, 0)
-    donateButton.Position = UDim2.new(0.25, 0, 0.6, 0)
-    donateButton.Text = "Donate"
-    donateButton.Font = Enum.Font.SourceSansBold
-    donateButton.TextSize = 18
-    donateButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    donateButton.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
-
-    donateButton.MouseButton1Click:Connect(function()
-        local amount = tonumber(robuxBox.Text)
-        local targetPlayerName = "TargetPlayer"  -- Replace with actual logic for target selection
-        local targetPlayer = game.Players:FindFirstChild(targetPlayerName)
-
-        if targetPlayer and amount and amount >= 5 then
-            DonationEvent:FireServer(targetPlayer, amount)
-        else
-            warn("Invalid donation: Enter a valid target player and amount (5+).")
-        end
-    end)
+-- Check if player is VIP
+local function isVIP(player)
+    -- Replace with your actual VIP check (e.g., check for group rank, game pass, etc.)
+    return player.UserId == 987654321  -- Example: change this to a specific user ID or other check
 end
 
--- Add the donation interface when the player joins
-game.Players.LocalPlayer.CharacterAdded:Connect(function()
-    createDonationInterface()
-end)
+-- Display Buttons for Admins and VIPs
+local yPosition = 0.1  -- Starting Y position for buttons
 
--- Admin Commands
-local adminCommands = {
-    ["kick"] = function(targetPlayer)
-        if isAdmin(game.Players.LocalPlayer) then
-            targetPlayer:Kick("You have been kicked by an admin.")
-        end
-    end,
-    ["shutdown"] = function()
-        if isAdmin(game.P-- Full Script (Server + Client) for Donation and Admin Functions
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local DonationEvent = Instance.new("RemoteEvent", ReplicatedStorage)
-DonationEvent.Name = "ForceDonation"
-
-local MIN_DONATE_AMOUNT = 5  -- Minimum Robux to donate
-
--- Function to check if the player is an admin
-local function isAdmin(player)
-    -- The player who runs the script (turns it on) will be the admin
-    return player == game.Players.LocalPlayer
+if isAdmin(player) then
+    -- Admin specific buttons
+    createButton("Add Item", UDim2.new(0, 0, yPosition, 0), addItem)
+    yPosition = yPosition + 0.1
+    createButton("Remove Item", UDim2.new(0, 0, yPosition, 0), removeItem)
+    yPosition = yPosition + 0.1
 end
 
--- Server-Side Donation Handling
-DonationEvent.OnServerEvent:Connect(function(player, targetPlayer, amount)
-    if not isAdmin(player) then
-        player:Kick("You do not have permission to donate.")
-        return
-    end
-
-    if targetPlayer and amount >= MIN_DONATE_AMOUNT then
-        local success, err = pcall(function()
-            -- Simulate the donation process
-            print(player.Name .. " donated " .. amount .. " Robux to " .. targetPlayer.Name)
-        end)
-
-        if success then
-            player:Kick("Donation of " .. amount .. " Robux successfully sent to " .. targetPlayer.Name)
-        else
-            warn("Error during donation: " .. err)
-        end
-    else
-        player:Kick("You must donate at least " .. MIN_DONATE_AMOUNT .. " Robux.")
-    end
-end)
-
--- Client-Side Donation Interface
-local function createDonationInterface()
-    local gui = Instance.new("ScreenGui")
-    gui.Name = "DonationInterface"
-    gui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-
-    local frame = Instance.new("Frame", gui)
-    frame.Size = UDim2.new(0.3, 0, 0.3, 0)
-    frame.Position = UDim2.new(0.35, 0, 0.35, 0)
-    frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    frame.BorderSizePixel = 0
-
-    local titleLabel = Instance.new("TextLabel", frame)
-    titleLabel.Size = UDim2.new(1, 0, 0.2, 0)
-    titleLabel.Position = UDim2.new(0, 0, 0, 0)
-    titleLabel.Text = "Force Donation"
-    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    titleLabel.BackgroundTransparency = 1
-    titleLabel.Font = Enum.Font.SourceSansBold
-    titleLabel.TextSize = 20
-
-    local robuxLabel = Instance.new("TextLabel", frame)
-    robuxLabel.Size = UDim2.new(1, 0, 0.15, 0)
-    robuxLabel.Position = UDim2.new(0, 0, 0.2, 0)
-    robuxLabel.Text = "Enter Robux Amount (5+):"
-    robuxLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-    robuxLabel.BackgroundTransparency = 1
-    robuxLabel.Font = Enum.Font.SourceSans
-    robuxLabel.TextSize = 16
-
-    local robuxBox = Instance.new("TextBox", frame)
-    robuxBox.Size = UDim2.new(1, 0, 0.15, 0)
-    robuxBox.Position = UDim2.new(0, 0, 0.35, 0)
-    robuxBox.PlaceholderText = "Enter amount"
-    robuxBox.Text = ""
-    robuxBox.Font = Enum.Font.SourceSans
-    robuxBox.TextSize = 16
-    robuxBox.TextColor3 = Color3.fromRGB(0, 0, 0)
-
-    local donateButton = Instance.new("TextButton", frame)
-    donateButton.Size = UDim2.new(0.5, 0, 0.2, 0)
-    donateButton.Position = UDim2.new(0.25, 0, 0.6, 0)
-    donateButton.Text = "Donate"
-    donateButton.Font = Enum.Font.SourceSansBold
-    donateButton.TextSize = 18
-    donateButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    donateButton.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
-
-    donateButton.MouseButton1Click:Connect(function()
-        local amount = tonumber(robuxBox.Text)
-        local targetPlayerName = "TargetPlayer"  -- Replace with actual logic for target selection
-        local targetPlayer = game.Players:FindFirstChild(targetPlayerName)
-
-        if targetPlayer and amount and amount >= 5 then
-            DonationEvent:FireServer(targetPlayer, amount)
-        else
-            warn("Invalid donation: Enter a valid target player and amount (5+).")
-        end
-    end)
+if isVIP(player) then
+    -- VIP specific button to change booth color
+    createButton("VIP: Change Booth Color (Free)", UDim2.new(0, 0, yPosition, 0), changeBoothColor)
+    yPosition = yPosition + 0.1
+    -- VIP specific button to increase donations
+    createButton("VIP: Increase Donations", UDim2.new(0, 0, yPosition, 0), increaseDonations)
+    yPosition = yPosition + 0.1
 end
 
--- Add the donation interface when the player joins
-game.Players.LocalPlayer.CharacterAdded:Connect(function()
-    createDonationInterface()
-end)
-
--- Admin Commands
-local adminCommands = {
-    ["kick"] = function(targetPlayer)
-        if isAdmin(game.Players.LocalPlayer) then
-            targetPlayer:Kick("You have been kicked by an admin.")
-        end
-    end,
-    ["shutdown"] = function()
-        if isAdmin(game.Players.LocalPlayer) then
-            game:Shutdown()
-        end
-    end
-}-- Full Script (Server + Client) for Donation and Admin Functions
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local DonationEvent = Instance.new("RemoteEvent", ReplicatedStorage)
-DonationEvent.Name = "ForceDonation"
-
-local MIN_DONATE_AMOUNT = 5  -- Minimum Robux to donate
-
--- Function to check if the player is an admin
-local function isAdmin(player)
-    -- The player who runs the script (turns it on) will be the admin
-    return player == game.Players.LocalPlayer
+-- Function to Auto Jump to Server with High Donations
+local function autoJoinTopServer()
+    -- Logic to find and join the server with the most donations
+    print("Jumping to the server with the highest donations...")
 end
 
--- Server-Side Donation Handling
-DonationEvent.OnServerEvent:Connect(function(player, targetPlayer, amount)
-    if not isAdmin(player) then
-        player:Kick("You do not have permission to donate.")
-        return
-    end
-
-    if targetPlayer and amount >= MIN_DONATE_AMOUNT then
-        local success, err = pcall(function()
-            -- Simulate the donation process
-            print(player.Name .. " donated " .. amount .. " Robux to " .. targetPlayer.Name)
-        end)
-
-        if success then
-            player:Kick("Donation of " .. amount .. " Robux successfully sent to " .. targetPlayer.Name)
-        else
-            warn("Error during donation: " .. err)
-        end
-    else
-        player:Kick("You must donate at least " .. MIN_DONATE_AMOUNT .. " Robux.")
-    end
-end)
-
--- Client-Side Donation Interface
-local function createDonationInterface()
-    local gui = Instance.new("ScreenGui")
-    gui.Name = "DonationInterface"
-    gui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-
-    local frame = Instance.new("Frame", gui)
-    frame.Size = UDim2.new(0.3, 0, 0.3, 0)
-    frame.Position = UDim2.new(0.35, 0, 0.35, 0)
-    frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    frame.BorderSizePixel = 0
-
-    local titleLabel = Instance.new("TextLabel", frame)
-    titleLabel.Size = UDim2.new(1, 0, 0.2, 0)
-    titleLabel.Position = UDim2.new(0, 0, 0, 0)
-    titleLabel.Text = "Force Donation"
-    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    titleLabel.BackgroundTransparency = 1
-    titleLabel.Font = Enum.Font.SourceSansBold
-    titleLabel.TextSize = 20
-
-    local robuxLabel = Instance.new("TextLabel", frame)
-    robuxLabel.Size = UDim2.new(1, 0, 0.15, 0)
-    robuxLabel.Position = UDim2.new(0, 0, 0.2, 0)
-    robuxLabel.Text = "Enter Robux Amount (5+):"
-    robuxLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-    robuxLabel.BackgroundTransparency = 1
-    robuxLabel.Font = Enum.Font.SourceSans
-    robuxLabel.TextSize = 16
-
-    local robuxBox = Instance.new("TextBox", frame)
-    robuxBox.Size = UDim2.new(1, 0, 0.15, 0)
-    robuxBox.Position = UDim2.new(0, 0, 0.35, 0)
-    robuxBox.PlaceholderText = "Enter amount"
-    robuxBox.Text = ""
-    robuxBox.Font = Enum.Font.SourceSans
-    robuxBox.TextSize = 16
-    robuxBox.TextColor3 = Color3.fromRGB(0, 0, 0)
-
-    local donateButton = Instance.new("TextButton", frame)
-    donateButton.Size = UDim2.new(0.5, 0, 0.2, 0)
-    donateButton.Position = UDim2.new(0.25, 0, 0.6, 0)
-    donateButton.Text = "Donate"
-    donateButton.Font = Enum.Font.SourceSansBold
-    donateButton.TextSize = 18
-    donateButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    donateButton.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
-
-    donateButton.MouseButton1Click:Connect(function()
-        local amount = tonumber(robuxBox.Text)
-        local targetPlayerName = "TargetPlayer"  -- Replace with actual logic for target selection
-        local targetPlayer = game.Players:FindFirstChild(targetPlayerName)
-
-        if targetPlayer and amount and amount >= 5 then
-            DonationEvent:FireServer(targetPlayer, amount)
-        else
-            warn("Invalid donation: Enter a valid target player and amount (5+).")
-        end
-    end)
+-- Add Auto-Join Top Server Button for Admin
+if isAdmin(player) then
+    createButton("Auto Join Top Server", UDim2.new(0, 0, yPosition, 0), autoJoinTopServer)
+    yPosition = yPosition + 0.1
 end
-
--- Add the donation interface when the player joins
-game.Players.LocalPlayer.CharacterAdded:Connect(function()
-    createDonationInterface()
-end)
-
--- Admin Commands
-local adminCommands = {
-    ["kick"] = function(targetPlayer)
-        if isAdmin(game.Players.LocalPlayer) then
-            targetPlayer:Kick("You have been kicked by an admin.")
-        end
-    end,
-    ["shutdown"] = function()
-        if isAdmin(game.P-- Full Script (Server + Client) for Donation and Admin Functions
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local DonationEvent = Instance.new("RemoteEvent", ReplicatedStorage)
-DonationEvent.Name = "ForceDonation"
-
-local MIN_DONATE_AMOUNT = 5  -- Minimum Robux to donate
-
--- Function to check if the player is an admin
-local function isAdmin(player)
-    -- The player who runs the script (turns it on) will be the admin
-    return player == game.Players.LocalPlayer
-end
-
--- Server-Side Donation Handling
-DonationEvent.OnServerEvent:Connect(function(player, targetPlayer, amount)
-    if not isAdmin(player) then
-        player:Kick("You do not have permission to donate.")
-        return
-    end
-
-    if targetPlayer and amount >= MIN_DONATE_AMOUNT then
-        local success, err = pcall(function()
-            -- Simulate the donation process
-            print(player.Name .. " donated " .. amount .. " Robux to " .. targetPlayer.Name)
-        end)
-
-        if success then
-            player:Kick("Donation of " .. amount .. " Robux successfully sent to " .. targetPlayer.Name)
-        else
-            warn("Error during donation: " .. err)
-        end
-    else
-        player:Kick("You must donate at least " .. MIN_DONATE_AMOUNT .. " Robux.")
-    end
-end)
-
--- Client-Side Donation Interface
-local function createDonationInterface()
-    local gui = Instance.new("ScreenGui")
-    gui.Name = "DonationInterface"
-    gui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-
-    local frame = Instance.new("Frame", gui)
-    frame.Size = UDim2.new(0.3, 0, 0.3, 0)
-    frame.Position = UDim2.new(0.35, 0, 0.35, 0)
-    frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    frame.BorderSizePixel = 0
-
-    local titleLabel = Instance.new("TextLabel", frame)
-    titleLabel.Size = UDim2.new(1, 0, 0.2, 0)
-    titleLabel.Position = UDim2.new(0, 0, 0, 0)
-    titleLabel.Text = "Force Donation"
-    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    titleLabel.BackgroundTransparency = 1
-    titleLabel.Font = Enum.Font.SourceSansBold
-    titleLabel.TextSize = 20
-
-    local robuxLabel = Instance.new("TextLabel", frame)
-    robuxLabel.Size = UDim2.new(1, 0, 0.15, 0)
-    robuxLabel.Position = UDim2.new(0, 0, 0.2, 0)
-    robuxLabel.Text = "Enter Robux Amount (5+):"
-    robuxLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-    robuxLabel.BackgroundTransparency = 1
-    robuxLabel.Font = Enum.Font.SourceSans
-    robuxLabel.TextSize = 16
-
-    local robuxBox = Instance.new("TextBox", frame)
-    robuxBox.Size = UDim2.new(1, 0, 0.15, 0)
-    robuxBox.Position = UDim2.new(0, 0, 0.35, 0)
-    robuxBox.PlaceholderText = "Enter amount"
-    robuxBox.Text = ""
-    robuxBox.Font = Enum.Font.SourceSans
-    robuxBox.TextSize = 16
-    robuxBox.TextColor3 = Color3.fromRGB(0, 0, 0)
-
-    local donateButton = Instance.new("TextButton", frame)
-    donateButton.Size = UDim2.new(0.5, 0, 0.2, 0)
-    donateButton.Position = UDim2.new(0.25, 0, 0.6, 0)
-    donateButton.Text = "Donate"
-    donateButton.Font = Enum.Font.SourceSansBold
-    donateButton.TextSize = 18
-    donateButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    donateButton.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
-
-    donateButton.MouseButton1Click:Connect(function()
-        local amount = tonumber(robuxBox.Text)
-        local targetPlayerName = "TargetPlayer"  -- Replace with actual logic for target selection
-        local targetPlayer = game.Players:FindFirstChild(targetPlayerName)
-
-        if targetPlayer and amount and amount >= 5 then
-            DonationEvent:FireServer(targetPlayer, amount)
-        else
-            warn("Invalid donation: Enter a valid target player and amount (5+).")
-        end
-    end)
-end
-
--- Add the donation interface when the player joins
-game.Players.LocalPlayer.CharacterAdded:Connect(function()
-    createDonationInterface()
-end)
-
--- Admin Commands
-local adminCommands = {
-    ["kick"] = function(targetPlayer)
-        if isAdmin(game.Players.LocalPlayer) then
-            targetPlayer:Kick("You have been kicked by an admin.")
-        end
-    end,
-    ["shutdown"] = function()
-        if isAdmin(game.Players.LocalPlayer) then
-            game:Shutdown()
-        end
-    end
-}
-
--- Handle Admin Commands
-game:GetService("ReplicatedStorage").OnServerEvent:Connect(function(player, command, targetPlayerName)
-    if isAdmin(player) then
-        local targetPlayer = game.Players:FindFirstChild(targetPlayerName)
-        if adminCommands[command] then
-            adminCommands[command](targetPlayer)
-        end
-    else
-        player:Kick("You do not have permission to execute this command.")
-    end
-end)
-layers.LocalPlayer) then
-            game:Shutdown()
-        end
-    end
-}
-
--- Handle Admin Commands
-game:GetService("ReplicatedStorage").OnServerEvent:Connect(function(player, command, targetPlayerName)
-    if isAdmin(player) then
-        local targetPlayer = game.Players:FindFirstChild(targetPlayerName)
-        if adminCommands[command] then
-            adminCommands[command](targetPlayer)
-        end
-    else
-        player:Kick("You do not have permission to execute this command.")
-    end
-end)
-
-
--- Handle Admin Commands
-game:GetService("ReplicatedStorage").OnServerEvent:Connect(function(player, command, targetPlayerName)
-    if isAdmin(player) then
-        local targetPlayer = game.Players:FindFirstChild(targetPlayerName)
-        if adminCommands[command] then
-            adminCommands[command](targetPlayer)
-        end
-    else
-        player:Kick("You do not have permission to execute this command.")
-    end
-end)
-layers.LocalPlayer) then
-            game:Shutdown()
-        end
-    end
-}
-
--- Handle Admin Commands
-game:GetService("ReplicatedStorage").OnServerEvent:Connect(function(player, command, targetPlayerName)
-    if isAdmin(player) then
-        local targetPlayer = game.Players:FindFirstChild(targetPlayerName)
-        if adminCommands[command] then
-            adminCommands[command](targetPlayer)
-        end
-    else
-        player:Kick("You do not have permission to execute this command.")
-    end
-end)
