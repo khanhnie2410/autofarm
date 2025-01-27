@@ -1,98 +1,146 @@
--- Main Frame
-local frame = Instance.new("Frame")
-frame.Parent = screenGui
-frame.Size = UDim2.new(0.3, 0, 0.5, 0)
-frame.Position = UDim2.new(0.35, 0, 0.25, 0)
-frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)  -- Dark background
-frame.BorderSizePixel = 0
+local player = game.Players.LocalPlayer
+local gui = player.PlayerGui:WaitForChild("ScreenGui")
+local isMenuVisible = false -- Variable to check if the menu is visible
 
--- Title for the menu
+-- Create Main Menu Frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 300, 0, 400)
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -200) -- Position in the middle of the screen
+mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Black background
+mainFrame.BackgroundTransparency = 0.8 -- Slight transparency
+mainFrame.Visible = isMenuVisible -- Menu will be hidden when first joining
+mainFrame.Parent = gui
+
+-- Create title for the menu
 local title = Instance.new("TextLabel")
-title.Parent = frame
-title.Size = UDim2.new(1, 0, 0.1, 0)
-title.Position = UDim2.new(0, 0, 0, 0)
-title.BackgroundTransparency = 1
-title.Text = "Admin VIP Menu"
-title.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White text
-title.TextSize = 24
+title.Text = "Pls Donate Script"
+title.Size = UDim2.new(1, 0, 0, 40)
+title.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+title.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
+title.TextSize = 20
 title.TextAlign = Enum.TextAlign.Center
+title.Parent = mainFrame
 
--- Create Button function
-local function createButton(name, position, func)
-    local button = Instance.new("TextButton")
-    button.Parent = frame
-    button.Size = UDim2.new(1, 0, 0.1, 0)
-    button.Position = position
-    button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)  -- Dark button color
-    button.TextColor3 = Color3.fromRGB(0, 255, 0)  -- Green text
-    button.Text = name
-    button.TextSize = 20
-    button.TextAlign = Enum.TextAlign.Center
-    button.MouseButton1Click:Connect(func)
+-- Create buttons for menu functions
+local requestDonationButton = Instance.new("TextButton")
+requestDonationButton.Text = "Request Donation"
+requestDonationButton.Size = UDim2.new(1, 0, 0, 40)
+requestDonationButton.Position = UDim2.new(0, 0, 0, 50)
+requestDonationButton.BackgroundColor3 = Color3.fromRGB(255, 255, 0) -- Yellow background
+requestDonationButton.TextColor3 = Color3.fromRGB(0, 0, 0) -- Black text
+requestDonationButton.TextSize = 18
+requestDonationButton.Parent = mainFrame
+
+-- Create Input fields for Name and Robux
+local nameInput = Instance.new("TextBox")
+nameInput.PlaceholderText = "Enter Name"
+nameInput.Size = UDim2.new(1, 0, 0, 40)
+nameInput.Position = UDim2.new(0, 0, 0, 100)
+nameInput.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+nameInput.TextColor3 = Color3.fromRGB(0, 0, 0)
+nameInput.TextSize = 16
+nameInput.Parent = mainFrame
+
+local robuxInput = Instance.new("TextBox")
+robuxInput.PlaceholderText = "Enter Robux Amount"
+robuxInput.Size = UDim2.new(1, 0, 0, 40)
+robuxInput.Position = UDim2.new(0, 0, 0, 150)
+robuxInput.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+robuxInput.TextColor3 = Color3.fromRGB(0, 0, 0)
+robuxInput.TextSize = 16
+robuxInput.Parent = mainFrame
+
+-- Notification Label
+local notificationLabel = Instance.new("TextLabel")
+notificationLabel.Text = "No notifications yet"
+notificationLabel.Size = UDim2.new(1, 0, 0, 40)
+notificationLabel.Position = UDim2.new(0, 0, 0, 200)
+notificationLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255) -- White background
+notificationLabel.TextColor3 = Color3.fromRGB(0, 0, 0) -- Black text
+notificationLabel.TextSize = 16
+notificationLabel.TextAlign = Enum.TextAlign.Center
+notificationLabel.Parent = mainFrame
+
+-- Function to request donation
+local function requestDonation()
+    local name = nameInput.Text
+    local robuxAmount = tonumber(robuxInput.Text)
+
+    if name == "" or not robuxAmount then
+        notificationLabel.Text = "Please enter a valid name and Robux amount."
+    else
+        -- Show a notification to the requesting player
+        notificationLabel.Text = "You have requested a donation of " .. robuxAmount .. " Robux from " .. name
+
+        -- Send a message to the player
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "Donation Request",
+            Text = "You requested " .. robuxAmount .. " Robux from " .. name .. ". Please donate if you wish!",
+            Duration = 5
+        })
+    end
 end
 
--- Functions for Admin
-local function addItem()
-    print("Add Item clicked!")
-    -- Admin functionality: Logic to add item to inventory or display
+-- Auto Donate Function
+local function autoDonate(targetPlayer, robuxAmount)
+    if targetPlayer and robuxAmount and robuxAmount > 0 then
+        -- Simulate donation action (can't really donate Robux via script, this is for demo)
+        print("Attempting to donate " .. robuxAmount .. " Robux to " .. targetPlayer.Name)
+
+        -- Show notification
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "Donation Success",
+            Text = "You donated " .. robuxAmount .. " Robux to " .. targetPlayer.Name,
+            Duration = 5
+        })
+    else
+        print("Invalid target player or Robux amount")
+    end
 end
 
-local function removeItem()
-    print("Remove Item clicked!")
-    -- Admin functionality: Logic to remove item from inventory or display
+-- VIP Donor Notification
+local function notifyVIPDonor(donorPlayer)
+    local isVIP = donorPlayer.MembershipType == Enum.MembershipType.Premium
+    if isVIP then
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "VIP Donation",
+            Text = donorPlayer.Name .. " (VIP) has donated to you! Thank you for being awesome!",
+            Duration = 5
+        })
+    end
 end
 
--- Functions for VIP
-local function changeBoothColor()
-    print("Change Booth Color clicked!")
-    -- VIP functionality: Logic to change booth color
+-- Toggle Menu function
+local function toggleMenu()
+    isMenuVisible = not isMenuVisible
+    mainFrame.Visible = isMenuVisible
 end
 
-local function increaseDonations()
-    print("Increase Donations clicked!")
-    -- VIP functionality: Logic to give more Robux or donation benefits
-end
+-- Create Logo (Button to toggle menu)
+local logo = Instance.new("ImageButton")
+logo.Size = UDim2.new(0, 50, 0, 50)  -- Logo size
+logo.Position = UDim2.new(0.5, -25, 0.1, 0)  -- Position near the top-center of the screen
+logo.Image = "rbxassetid://1234567890"  -- Replace with your logo's ID
+logo.BackgroundTransparency = 1  -- Transparent background
+logo.Parent = gui
 
--- Check if player is admin
-local function isAdmin(player)
-    -- Replace with your actual admin check (e.g., check for group rank, game pass, etc.)
-    return player.UserId == 123456789  -- Example: change this to a specific user ID or other check
-end
+-- Connect events to buttons
+logo.MouseButton1Click:Connect(function()
+    print("Logo clicked!")
+    toggleMenu() -- When logo is clicked, toggle the menu visibility
+end)
 
--- Check if player is VIP
-local function isVIP(player)
-    -- Replace with your actual VIP check (e.g., check for group rank, game pass, etc.)
-    return player.UserId == 987654321  -- Example: change this to a specific user ID or other check
-end
+requestDonationButton.MouseButton1Click:Connect(function()
+    print("Request Donation button clicked!")
+    requestDonation()  -- When Request Donation is clicked, perform the donation request
+end)
 
--- Display Buttons for Admins and VIPs
-local yPosition = 0.1  -- Starting Y position for buttons
+-- Example auto-donate functionality for testing
+-- This will simulate a donation process for testing purposes
+local targetPlayer = game.Players:FindFirstChild("PlayerName") -- Replace "PlayerName" with the player's name you want to donate to
+local robuxAmount = 50 -- The amount of Robux you want to donate
+autoDonate(targetPlayer, robuxAmount)
 
-if isAdmin(player) then
-    -- Admin specific buttons
-    createButton("Add Item", UDim2.new(0, 0, yPosition, 0), addItem)
-    yPosition = yPosition + 0.1
-    createButton("Remove Item", UDim2.new(0, 0, yPosition, 0), removeItem)
-    yPosition = yPosition + 0.1
-end
-
-if isVIP(player) then
-    -- VIP specific button to change booth color
-    createButton("VIP: Change Booth Color (Free)", UDim2.new(0, 0, yPosition, 0), changeBoothColor)
-    yPosition = yPosition + 0.1
-    -- VIP specific button to increase donations
-    createButton("VIP: Increase Donations", UDim2.new(0, 0, yPosition, 0), increaseDonations)
-    yPosition = yPosition + 0.1
-end
-
--- Function to Auto Jump to Server with High Donations
-local function autoJoinTopServer()
-    -- Logic to find and join the server with the most donations
-    print("Jumping to the server with the highest donations...")
-end
-
--- Add Auto-Join Top Server Button for Admin
-if isAdmin(player) then
-    createButton("Auto Join Top Server", UDim2.new(0, 0, yPosition, 0), autoJoinTopServer)
-    yPosition = yPosition + 0.1
-end
+-- Example VIP donation notification
+local donorPlayer = game.Players:FindFirstChild("DonorName") -- Replace "DonorName" with the name of the donor
+notifyVIPDonor(donorPlayer)
